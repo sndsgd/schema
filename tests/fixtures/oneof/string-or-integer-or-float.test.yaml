@@ -1,0 +1,40 @@
+---
+name: fixtures.oneof.MinMaxInteger
+type: integer
+rules:
+- !rule/min 0
+- !rule/max 100
+---
+name: fixtures.oneof.StringOrIntegerOrFloatTest
+type: oneof
+types:
+- string
+- fixtures.oneof.MinMaxInteger
+- float
+
+
+---
+# test failures
+
+- value: ~
+  expect:
+  - { path: "$", message: "must be one of the following types: string, integer, float" }
+
+- value: []
+  expect:
+  - { path: "$", message: "must be one of the following types: string, integer, float" }
+
+- value: { foo: bar }
+  expect:
+  - { path: "$", message: "must be one of the following types: string, integer, float" }
+
+- value: 101
+  expect:
+  - { path: "$", message: "must be less than or equal to 100" }
+
+---
+
+- value: hello
+- value: 0
+- value: 100
+- value: 123.456

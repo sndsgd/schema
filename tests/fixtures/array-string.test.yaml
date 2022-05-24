@@ -1,0 +1,65 @@
+--- # type definition
+name: fixtures.TestStringArray
+type: array
+value:
+  type: string
+  rules:
+  - !rule/maxLength 10
+
+--- # failure tests
+- value: a string
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: a string
+  path: $.some.deep.path
+  expect:
+  - path: $.some.deep.path
+    message: must be an array
+- value: 123
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: 123
+  path: $.woo
+  expect:
+  - path: $.woo
+    message: must be an array
+- value: null
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: null
+  path: $.another.deep.path
+  expect:
+  - path: $.another.deep.path
+    message: must be an array
+- value: { foo: bar }
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: [ 123 ]
+  expect:
+  - path: $.0
+    message: must be a string
+- value: [ a, 123, b, 123.456, c, ~, d, [] ]
+  expect:
+  - path: $.1
+    message: must be a string
+  - path: $.3
+    message: must be a string
+  - path: $.5
+    message: must be a string
+  - path: $.7
+    message: must be a string
+
+--- # success tests
+- value: [ "hello!" ]
+- value: [ "123" ]
+- value: [ "123.456" ]
+- value: [ "1234567890" ]
+- value: [ "abcdefghij", "qrstu", "wxyz" ]

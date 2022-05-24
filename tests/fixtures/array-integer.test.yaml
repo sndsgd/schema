@@ -1,0 +1,72 @@
+--- # type definition
+name: fixtures.TestIntegerArray
+type: array
+value:
+  type: integer
+  rules:
+  - !rule/min 0
+  - !rule/max 255
+
+--- # failure tests
+- value: a string
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: a string
+  path: $.some.deep.path
+  expect:
+  - path: $.some.deep.path
+    message: must be an array
+- value: 123
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: 123
+  path: $.woo
+  expect:
+  - path: $.woo
+    message: must be an array
+- value: null
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: null
+  path: $.another.deep.path
+  expect:
+  - path: $.another.deep.path
+    message: must be an array
+- value: { foo: bar }
+  path: $
+  expect:
+  - path: $
+    message: must be an array
+- value: [ "some string" ]
+  expect:
+  - path: $.0
+    message: must be an integer
+- value: [ 0, "string", 255, 123.456, ~, [] ]
+  expect:
+  - path: $.1
+    message: must be an integer
+  - path: $.3
+    message: must be an integer
+  - path: $.4
+    message: must be an integer
+  - path: $.5
+    message: must be an integer
+- value: [ -1, 0, 255, 256]
+  expect:
+  - path: $.0
+    message: must be greater than or equal to 0
+  - path: $.3
+    message: must be less than or equal to 255
+
+
+--- # success tests
+- value: [ 0 ]
+- value: [ 1 ]
+- value: [ 254 ]
+- value: [ 255, 254, 253, 252 ]

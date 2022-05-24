@@ -1,0 +1,59 @@
+---
+name: fixtures.TestObjectUsername
+type: string
+rules:
+- !rule/minLength 2
+- rule: regex
+  regex: /^[a-z]{1,}[a-z0-9-]+$/
+  description: >
+    must start with a letter and contain only letters,
+    numbers, and hyphens
+---
+name: fixtures.TestObject
+type: object
+properties:
+  username:
+    type: fixtures.TestObjectUsername
+  password:
+    type: string
+  autoRefresh:
+    type: boolean
+required:
+- username
+- password
+
+--- # failure tests
+
+- value: { username: 123, foo: bar }
+  expect:
+  - { path: $.username, message: must be a string }
+  - { path: $.password, message: required }
+  - { path: $.foo, message: unknown property }
+
+- value: { autoRefresh: [] }
+  expect:
+  - { path: $.username, message: required }
+  - { path: $.password, message: required }
+  - { path: $.autoRefresh, message: must be a boolean }
+
+- value: { username: this no workie, password: 9pno3fgp2f93 }
+  expect:
+  - path: $.username
+    message: >
+      must start with a letter and contain only letters,
+      numbers, and hyphens
+
+
+--- # success tests
+
+- value:
+    username: my-username
+    password: pa$$w0rd
+- value:
+    username: my-username
+    password: pa$$w0rd
+    autoRefresh: true
+- value:
+    username: a-good-username
+    password: boop
+    autoRefresh: false

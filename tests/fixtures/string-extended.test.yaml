@@ -1,0 +1,27 @@
+---
+name: fixtures.extendedStringTest.BaseString
+type: string
+rules:
+- !rule/minLength 5
+---
+name: fixtures.extendedStringTest.fixtureSubString
+type: fixtures.extendedStringTest.BaseString
+rules:
+- !rule/email
+
+--- # failure tests
+
+- value: "r@c"
+  expect:
+  - path: $
+    message: must be at least 5 characters
+- value: "hellooooooo"
+  expect:
+  - path: $
+    message: must be a valid email address
+
+
+--- # success tests
+
+- value: "me@example.com"
+- value: a@c.v

@@ -1,0 +1,4 @@
+/build
+/vendor
+/models
+/.phpunit.result.cache

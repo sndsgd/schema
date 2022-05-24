@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+
+if (PHP_MAJOR_VERSION < 8) {
+    echo "sndsgd/schema requires a version of PHP >= 8.0\n";
+    exit(1);
+}
+
+const BASE_DIR = __DIR__;
+const VERSION = "1.0.0";
+
+require __DIR__ . '/vendor/autoload.php';
+
+// use a custom error handler for any and all unexpected errors
+set_error_handler(function (int $number, string $message, string $file, int $line) {
+    fwrite(STDERR, "\n\n🚨 Something went wrong! 🚨\n");
+    $error_types = [E_WARNING => "Warning", E_NOTICE => "Notice"];
+    $type = $error_types[$number] ?? "Unknown Error";
+    fwrite(STDERR, "$type: $message\n");
+    foreach (debug_backtrace() as $index => $frame) {
+        fwrite(STDERR, sprintf("#%d %s:%d\n", $index, $frame["file"], $frame["line"]));
+    }
+    exit(1);
+}, E_ALL);
+
+$console = new \Symfony\Component\Console\Application("schema", VERSION);
+$console->add(new \sndsgd\schema\commands\GenerateTypesCommand());
+$console->run();

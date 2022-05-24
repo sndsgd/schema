@@ -1,0 +1,65 @@
+---
+name: fixtures.oneofobject.Foo
+type: object
+properties:
+  testKey:
+    type: string
+  fooProperty:
+    type: boolean
+required:
+- testKey
+- fooProperty
+---
+name: fixtures.oneofobject.Bar
+type: object
+properties:
+  testKey:
+    type: string
+  barProperty:
+    type: integer
+required:
+- testKey
+- barProperty
+---
+name: fixtures.oneofobject.Solo
+type: oneofobject
+key: testKey
+types:
+  foo: fixtures.oneofobject.Foo
+  bar: fixtures.oneofobject.Bar
+
+--- # failure tests
+
+- value: "not an object"
+  expect:
+  - path: $
+    message: "must be an object"
+
+- value:
+    doesNotContainKey: "nope, no key in sight!"
+  expect:
+  - path: $.testKey
+    message: "required"
+
+- value:
+    testKey: baz
+  expect:
+  - path: "$"
+    message: "must be oneof (fixtures.oneofobject.Foo,fixtures.oneofobject.Bar)"
+
+- value:
+    testKey: bar
+    barProperty: "not an integer"
+  expect:
+  - path: "$.barProperty"
+    message: must be an integer
+
+--- # success tests
+
+- value:
+    testKey: foo
+    fooProperty: true
+
+- value:
+    testKey: bar
+    barProperty: 123

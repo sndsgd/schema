@@ -1,0 +1,49 @@
+---
+name: fixtures.oneof.OneOrMoreObject
+type: object
+properties:
+  foo: string
+  list:
+    type: array
+    value: integer
+---
+name: fixtures.oneof.OneOrMoreObjectList
+type: array
+value:
+  type: fixtures.oneof.OneOrMoreObject
+---
+name: fixtures.oneof.OneOrMoreTest
+type: oneof
+types:
+- fixtures.oneof.OneOrMoreObject
+- fixtures.oneof.OneOrMoreObjectList
+
+---
+# test failures
+
+- value: ~
+  expect:
+  - path: "$"
+    message: "must be one of the following types: object<string,string|array<integer>>, array<object<string,string|array<integer>>>"
+
+- value: 123.456
+  expect:
+  - path: "$"
+    message: "must be one of the following types: object<string,string|array<integer>>, array<object<string,string|array<integer>>>"
+
+- value:
+    foo: hello!
+    list: 123
+  expect:
+  - path: "$"
+    message: "must be one of the following types: object<string,string|array<integer>>, array<object<string,string|array<integer>>>"
+
+---
+
+# - value:
+#   foo: abc123
+#   list: [ 1, 2, 3 ]
+
+- value:
+  - foo: abc123
+    list: [ 4, 5, 6 ]

@@ -1,0 +1,52 @@
+---
+name: fixtures.MapStringArrayObjectTest
+type: map
+key: !type string
+value:
+  type: array
+  value:
+    type: object
+    properties:
+      username:
+        type: string
+      hobbies:
+        type: array
+        value:
+          type: string
+    required:
+    - username
+
+--- # failure tests
+
+- value:
+    one: 123
+  expect:
+  - path: $.one
+    message: must be an array
+
+- value:
+    one: [ string ]
+  expect:
+  - path: $.one.0
+    message: must be an object
+
+- value: { one: [ { hobbies: paragliding } ] }
+  expect:
+  - { path: $.one.0.username, message: required }
+  - { path: $.one.0.hobbies, message: must be an array }
+
+--- # success tests
+
+- value:
+    a:
+      - username: no_hobbies
+      - username: one_hobby
+        hobbies:
+          - sleeping
+    b:
+      - username: two_hobbies
+        hobbies:
+          - hiking
+          - swiming
+
+

@@ -1,0 +1,34 @@
+---
+name: fixtures.MapKeyTest
+type: string
+rules:
+- !rule/minLength 3
+- !rule/maxLength 20
+---
+name: fixtures.MapValueTest
+type: integer
+rules:
+- !rule/min 0
+- !rule/max 255
+---
+name: fixtures.MapTest
+type: map
+key:
+  type: fixtures.MapKeyTest
+value:
+  type: fixtures.MapValueTest
+
+--- # failure tests
+
+- value: { username: 123, foo: bar }
+  expect:
+  - { path: $.foo, message: must be an integer }
+
+--- # success tests
+
+- value:
+    foo: 123
+- value:
+    foo: 0
+    bar: 42
+    baz: 255

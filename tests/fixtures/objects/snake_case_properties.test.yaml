@@ -1,0 +1,21 @@
+---
+name: fixtures.objects.SnakeCaseProperties
+type: object
+properties:
+  is_active:
+    type: boolean
+
+--- # failure tests
+
+- value: { is_active: 123 }
+  expect:
+  - { path: $.is_active, message: must be a boolean }
+
+- value: { is_active: "blegh" }
+  expect:
+  - { path: $.is_active, message: must be a boolean }
+
+--- # success tests
+
+- value: { is_active: true }
+- value: { is_active: false }
