@@ -9,7 +9,27 @@ if (PHP_MAJOR_VERSION < 8) {
 const BASE_DIR = __DIR__;
 const VERSION = "1.0.0";
 
-require __DIR__ . '/vendor/autoload.php';
+// need to be able to find the autoloader when this repo
+// is in a project's vendor directory...
+(function() {
+    $isLoaded = false;
+    $paths = [
+        __DIR__ . '/vendor/autoload.php',
+        __DIR__ . '/../../autoload.php',
+    ];
+
+    foreach ($paths as $path) {
+        if (file_exists($path)) {
+            require $path;
+            $isLoaded = true;
+        }
+    }
+
+    if (!$isLoaded) {
+        fwrite(STDERR, "failed to require composer autoloader!\n");
+        exit(1);
+    }
+})();
 
 // use a custom error handler for any and all unexpected errors
 set_error_handler(function (int $number, string $message, string $file, int $line) {
