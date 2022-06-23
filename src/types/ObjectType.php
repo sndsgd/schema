@@ -5,6 +5,7 @@ namespace sndsgd\schema\types;
 use LogicException;
 use sndsgd\schema\PropertyList;
 use sndsgd\schema\RuleList;
+use sndsgd\schema\Type;
 
 class ObjectType extends BaseType
 {
@@ -55,6 +56,25 @@ class ObjectType extends BaseType
         $this->requiredProperties = array_flip($names);
     }
 
+    private function isDefaultPossibleForType(
+        Type $type,
+        $default
+    ): bool
+    {
+        if ($type instanceof ScalarType) {
+            return true;
+        }
+
+        if (
+            $type instanceof ArrayType
+            && $default === []
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function setDefaults(array $defaults): void
     {
         $properties = $this->getProperties();
@@ -66,7 +86,16 @@ class ObjectType extends BaseType
                 );
             }
 
+            // only scalars and arrays with empty array defaults can have
+            // default values
             $type = $properties->get($key)->getType();
+            if (!$this->isDefaultPossibleForType($type, $value)) {
+                throw new \Exception(
+                    "cannot set default value for '$key'; " .
+                    "only scalar and empty arrays are acceptable defaults"
+                );
+            }
+
             foreach ($type->getRules() as $rule) {
                 try {
                     $rule->validate($value);

@@ -51,7 +51,13 @@ class ObjectTypeRenderer
         foreach ($this->type->getProperties()->toArray() as $property) {
             $name = $property->getName();
             $typehint = RenderHelper::getTypeHint($property->getType());
-            if (isset($defaults[$name])) {
+
+            // scalar defaults can be defined here but more complex
+            // types require initialization in the constructor
+            if (
+                isset($defaults[$name])
+                && ($property->getType() instanceof ScalarType)
+            ) {
                 $ret .= sprintf(
                     "    private $typehint \$$name = %s;\n",
                     var_export($defaults[$name], true)
@@ -130,6 +136,17 @@ class ObjectTypeRenderer
                 $ret .= "\n";
                 $ret .= "        if (property_exists(\$values, '$name')) {\n";
                 $ret .= $tmp;
+
+                // only scalars and arrays with empty array defaults can have
+                // default values
+                if (
+                    isset($this->type->getDefaults()[$name])
+                    && $this->type->getDefaults()[$name] === []
+                    && $property->getType() instanceof ArrayType
+                ) {
+                    $ret .= "        } else {\n";
+                    $ret .= "            \$this->$name = new $typeClass([]);\n";
+                }
                 $ret .= "        }\n";
             }
         }

@@ -28,6 +28,9 @@ properties:
     type: float
     rules:
     - !rule/max -0.0000001
+  empty_array:
+    type: array
+    value: string
 
 defaults:
   bool_false: false
@@ -40,6 +43,7 @@ defaults:
   float_zero: 0.0
   float_positive: 1
   float_negative: -1
+  empty_array: []
 required:
 - bool_required
 
@@ -60,6 +64,7 @@ required:
     float_zero: 123.0
     float_positive: 2.0
     float_negative: -2.0
+    empty_array: ["foo", "bar"]
 
 # this verifies that default values are used when the associated
 # properties are not provided
@@ -77,3 +82,4 @@ required:
     float_zero: 0.0
     float_positive: 1.0
     float_negative: -1.0
+    empty_array: []
