@@ -33,6 +33,11 @@ class PropertyList implements Countable
         $this->properties[$name] = $property;
     }
 
+    public function get(string $name): Property
+    {
+        return $this->properties[$name];
+    }
+
     public function has(string $name): bool
     {
         return isset($this->properties[$name]);

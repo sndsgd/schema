@@ -19,10 +19,13 @@ function createTestTypes(string $yaml): string
         return $created[$hash];
     }
 
-    $schemaPath = BUILD_DIR . "/$hash.type.yaml";
+    $schemaDir = BUILD_DIR . "/$hash";
+    $schemaPath = $schemaDir . "/$hash.type.yaml";
+
+    mkdir($schemaDir);
     file_put_contents($schemaPath, $yaml);
 
-    $searchPaths = [BUILD_DIR];
+    $searchPaths = [$schemaDir];
     $excludePaths = [];
 
     $definedRules = \sndsgd\schema\DefinedRules::create();
@@ -51,6 +54,7 @@ function createTestTypes(string $yaml): string
     $definedTypes->renderClasses(BUILD_DIR);
 
     unlink($schemaPath);
+    rmdir($schemaDir);
 
     $filterCallback = new \RecursiveCallbackFilterIterator(
         new \RecursiveDirectoryIterator(BUILD_DIR, \FilesystemIterator::SKIP_DOTS),

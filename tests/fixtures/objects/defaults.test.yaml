@@ -1,0 +1,79 @@
+---
+name: fixtures.objects.Defaults
+type: object
+properties:
+  bool_required:
+    type: boolean
+  bool_false:
+    type: boolean
+  bool_true:
+    type: boolean
+  string_empty:
+    type: string
+  string_not_empty:
+    type: string
+  integer_zero:
+    type: integer
+  integer_positive:
+    type: integer
+  integer_negative:
+    type: integer
+  float_zero:
+    type: float
+  float_positive:
+    type: float
+    rules:
+    - !rule/min 0.0000001
+  float_negative:
+    type: float
+    rules:
+    - !rule/max -0.0000001
+
+defaults:
+  bool_false: false
+  bool_true: true
+  string_empty: ""
+  string_not_empty: "hello"
+  integer_zero: 0
+  integer_positive: 123
+  integer_negative: -123
+  float_zero: 0.0
+  float_positive: 1
+  float_negative: -1
+required:
+- bool_required
+
+--- # failure tests
+
+--- # success tests
+
+# this verifies that provided values overwrite the defaults
+- value:
+    bool_required: true
+    bool_false: true
+    bool_true: false
+    string_empty: "abc"
+    string_not_empty: ""
+    integer_zero: 123
+    integer_positive: 0
+    integer_negative: 0
+    float_zero: 123.0
+    float_positive: 2.0
+    float_negative: -2.0
+
+# this verifies that default values are used when the associated
+# properties are not provided
+- value:
+    bool_required: true
+  expect:
+    bool_required: true
+    bool_false: false
+    bool_true: true
+    string_empty: ""
+    string_not_empty: "hello"
+    integer_zero: 0
+    integer_positive: 123
+    integer_negative: -123
+    float_zero: 0.0
+    float_positive: 1.0
+    float_negative: -1.0

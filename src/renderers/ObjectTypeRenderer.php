@@ -45,11 +45,20 @@ class ObjectTypeRenderer
 
     private function renderPropertyDefinitions(): string
     {
+        $defaults = $this->type->getDefaults();
+
         $ret = "";
         foreach ($this->type->getProperties()->toArray() as $property) {
             $name = $property->getName();
             $typehint = RenderHelper::getTypeHint($property->getType());
-            $ret .= "    private $typehint \$$name;\n";
+            if (isset($defaults[$name])) {
+                $ret .= sprintf(
+                    "    private $typehint \$$name = %s;\n",
+                    var_export($defaults[$name], true)
+                );
+            } else {
+                $ret .= "    private $typehint \$$name;\n";
+            }
         }
         return $ret;
     }
@@ -154,6 +163,8 @@ class ObjectTypeRenderer
 
     private function renderGetters(): string
     {
+        $defaults = $this->type->getDefaults();
+
         $ret = "";
         foreach ($this->type->getProperties()->toArray() as $property) {
             $name = $property->getName();
@@ -180,7 +191,7 @@ class ObjectTypeRenderer
             }
 
             if (
-                $property->getType()->getDefault() !== null
+                !isset($defaults[$name])
                 && !$this->type->isPropertyRequired($property->getName())
             ) {
                 $ret .= "    public function $hasMethod(): bool\n";
@@ -204,7 +215,7 @@ class ObjectTypeRenderer
 
             $ret .= "    {\n";
             if (
-                $property->getType()->getDefault() !== null
+                !isset($defaults[$name])
                 && !$this->type->isPropertyRequired($property->getName())
             ) {
                 $ret .= "        if (!\$this->$hasMethod()) {\n";
@@ -215,6 +226,7 @@ class ObjectTypeRenderer
                 $ret .= "        }\n";
                 $ret .= "\n";
             }
+
             $ret .= "        return $retval;\n";
             $ret .= "    }\n";
         }

@@ -68,11 +68,6 @@ class ScalarType extends BaseType
         $this->default = $default;
     }
 
-    public function getDefault()
-    {
-        return $this->default;
-    }
-
     private static function getTypeName(string $name, string $parentName): string
     {
         $shortTypeName = TypeHelper::resolveShortTypeName($parentName);

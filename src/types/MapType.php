@@ -35,11 +35,6 @@ class MapType extends BaseType
         $this->valueType = $valueType;
     }
 
-    public function getDefault()
-    {
-        return null;
-    }
-
     public function getParentName(): string
     {
         return $this->getName() === self::BASE_CLASSNAME ? "" : self::BASE_CLASSNAME;

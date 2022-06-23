@@ -27,13 +27,15 @@ class ObjectType extends BaseType
 
     private PropertyList $properties;
     private array $requiredProperties;
+    private array $defaults = [];
 
     public function __construct(
         string $name,
         string $description,
         RuleList $rules,
         PropertyList $properties,
-        array $requiredProperties
+        array $requiredProperties,
+        array $defaults
     ) {
         // only allow the base object to be created without any properties
         if ($name !== self::BASE_CLASSNAME && count($properties) === 0) {
@@ -45,6 +47,7 @@ class ObjectType extends BaseType
         parent::__construct($name, $description, $rules);
         $this->properties = $properties;
         $this->setRequiredProperties(...$requiredProperties);
+        $this->setDefaults($defaults);
     }
 
     private function setRequiredProperties(string ...$names): void
@@ -52,9 +55,40 @@ class ObjectType extends BaseType
         $this->requiredProperties = array_flip($names);
     }
 
-    public function getDefault()
+    private function setDefaults(array $defaults): void
     {
-        return null;
+        $properties = $this->getProperties();
+
+        foreach ($defaults as $key => $value) {
+            if (!$properties->has($key)) {
+                throw new \Exception(
+                    "cannot set default value for undefined property '$key'"
+                );
+            }
+
+            $type = $properties->get($key)->getType();
+            foreach ($type->getRules() as $rule) {
+                try {
+                    $rule->validate($value);
+                } catch (\Exception $ex) {
+                    $message = sprintf(
+                        "failed to set default value for '%s'; %s",
+                        $key,
+                        $ex->getMessage(),
+                    );
+
+                    throw new \Exception($message);
+                }
+            }
+
+            // TODO need to make sure the value validates
+            $this->defaults[$key] = $value;
+        }
+    }
+
+    public function getDefaults()
+    {
+        return $this->defaults;
     }
 
     public function getParentName(): string

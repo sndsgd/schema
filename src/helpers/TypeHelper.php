@@ -175,6 +175,7 @@ class TypeHelper
                         $doc["properties"] ?? [],
                     ),
                     array_values($doc["required"] ?? $parentType->getRequiredProperties()),
+                    $doc["defaults"] ?? $parentType->getDefaults()
                 );
             case MapType::class:
 

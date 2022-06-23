@@ -37,11 +37,6 @@ class ArrayType extends BaseType implements JsonSerializable
         $this->value = $value;
     }
 
-    public function getDefault()
-    {
-        return null;
-    }
-
     public function getParentName(): string
     {
         return $this->getName() === self::BASE_CLASSNAME ? "" : self::BASE_CLASSNAME;

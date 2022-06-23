@@ -106,6 +106,7 @@ class DefinedTypes implements Countable, YamlCallback
                     new RuleList(new \sndsgd\schema\rules\ObjectRule()),
                     new PropertyList(),
                     [],
+                    [],
                 ),
                 new MapType(
                     MapType::BASE_CLASSNAME,
