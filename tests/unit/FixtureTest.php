@@ -92,7 +92,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
                 throw new Exception("no classname found in '$relpath'");
             }
 
-            self::$data[$relpath] = [$classname, $failureData ?? [], $successData];
+            self::$data[$relpath] = [$classname, $failureData, $successData];
         }
 
         return self::$data;
@@ -102,7 +102,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
     {
         $ret = [];
         foreach (self::getTests() as $relpath => [$classname, , $tests]) {
-            foreach ($tests as $index => $testData) {
+            foreach ($tests ?? [] as $index => $testData) {
                 $ret["$relpath:failures:#" . ($index + 1)] = [
                     $classname,
                     array_values(\sndsgd\Arr::without($testData, "expect")),
