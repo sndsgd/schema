@@ -92,7 +92,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
                 throw new Exception("no classname found in '$relpath'");
             }
 
-            self::$data[$relpath] = [$classname, $failureData, $successData];
+            self::$data[$relpath] = [$classname, $failureData ?? [], $successData];
         }
 
         return self::$data;

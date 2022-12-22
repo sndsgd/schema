@@ -38,6 +38,7 @@ class DefinedRules implements Countable
         \sndsgd\schema\rules\ReadableFileRule::class,
         \sndsgd\schema\rules\RegexRule::class,
         \sndsgd\schema\rules\UniqueRule::class,
+        \sndsgd\schema\rules\WritableFileRule::class,
     ];
 
     public static function create(): DefinedRules
