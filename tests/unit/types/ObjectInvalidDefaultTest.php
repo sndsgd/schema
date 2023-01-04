@@ -28,7 +28,7 @@ class ObjectInvalidDefaultTest extends \PHPUnit\Framework\TestCase
         $errors = $ex->getValidationErrors()->toArray();
         $this->assertStringContainsString(
             $expectErrorMessage,
-            $errors[0]["message"]
+            $errors[0]["message"],
         );
     }
 

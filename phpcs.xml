@@ -61,7 +61,7 @@
     <rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
     <!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
     <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
-    <rule ref="SlevomatCodingStandard.Functions.TrailingCommaInCall"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
     <!-- <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/> -->
     <!-- <rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/> -->
     <!-- <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/> -->
@@ -82,7 +82,7 @@
     <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine"/>
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceDeclaration"/>
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceSpacing"/>
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/> -->
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/>
     <rule ref="SlevomatCodingStandard.Namespaces.RequireOneNamespaceInFile"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
         <properties>
@@ -106,7 +106,7 @@
     <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
         <properties>
-            <property name="newlinesCountBetweenOpenTagAndDeclare" value="0"/>
+            <property name="declareOnFirstLine" value="1"/>
             <property name="newlinesCountAfterDeclare" value="2"/>
             <property name="spacesCountAroundEqualsSign" value="0"/>
         </properties>
@@ -122,4 +122,11 @@
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
+    <rule ref="SlevomatCodingStandard.Classes.TraitUseSpacing">
+        <properties>
+            <property name="linesCountBeforeFirstUse" value="0"/>
+            <property name="linesCountBeforeFirstUseWhenFirstInClass" value="0"/>
+            <property name="linesCountAfterLastUse" value="1"/>
+        </properties>
+    </rule>
 </ruleset>

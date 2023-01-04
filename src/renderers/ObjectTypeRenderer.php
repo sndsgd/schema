@@ -60,7 +60,7 @@ class ObjectTypeRenderer
             ) {
                 $ret .= sprintf(
                     "    private $typehint \$$name = %s;\n",
-                    var_export($defaults[$name], true)
+                    var_export($defaults[$name], true),
                 );
             } else {
                 $ret .= "    private $typehint \$$name;\n";

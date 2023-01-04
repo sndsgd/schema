@@ -49,7 +49,7 @@ class RuleList implements Countable, IteratorAggregate
         $this->rules = [$typeRule];
 
         foreach ($rules as $rule) {
-            $class = get_class($rule);
+            $class = $rule::class;
 
             if (isset(self::TYPE_RULES[$class])) {
                 throw new LogicException(

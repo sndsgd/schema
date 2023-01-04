@@ -65,14 +65,10 @@ class ObjectType extends BaseType
             return true;
         }
 
-        if (
+        return 
             $type instanceof ArrayType
             && $default === []
-        ) {
-            return true;
-        }
-
-        return false;
+        ;
     }
 
     private function setDefaults(array $defaults): void
@@ -82,7 +78,7 @@ class ObjectType extends BaseType
         foreach ($defaults as $key => $value) {
             if (!$properties->has($key)) {
                 throw new \Exception(
-                    "cannot set default value for undefined property '$key'"
+                    "cannot set default value for undefined property '$key'",
                 );
             }
 
@@ -92,14 +88,14 @@ class ObjectType extends BaseType
             if (!$this->isDefaultPossibleForType($type, $value)) {
                 throw new \Exception(
                     "cannot set default value for '$key'; " .
-                    "only scalar and empty arrays are acceptable defaults"
+                    "only scalar and empty arrays are acceptable defaults",
                 );
             }
 
             foreach ($type->getRules() as $rule) {
                 try {
                     $rule->validate($value);
-                } catch (\Exception $ex) {
+                } catch (\Throwable $ex) {
                     $message = sprintf(
                         "failed to set default value for '%s'; %s",
                         $key,

@@ -109,7 +109,7 @@ class DefinedRulesTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage("invalid rule name '");
-        (DefinedRules::create())->addRule(get_class($instance));
+        (DefinedRules::create())->addRule($instance::class);
     }
 
     public function testInstantiateRuleUndefinedNameException(): void

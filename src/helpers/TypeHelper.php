@@ -148,7 +148,7 @@ class TypeHelper
             $doc["rules"] ?? [],
         );
 
-        switch (get_class($parentType)) {
+        switch ($parentType::class) {
             case ArrayType::class:
                 if (!isset($doc["value"])) {
                     throw new InvalidTypeDefinitionException("missing required key `value`");
@@ -175,7 +175,7 @@ class TypeHelper
                         $doc["properties"] ?? [],
                     ),
                     array_values($doc["required"] ?? $parentType->getRequiredProperties()),
-                    $doc["defaults"] ?? $parentType->getDefaults()
+                    $doc["defaults"] ?? $parentType->getDefaults(),
                 );
             case MapType::class:
 
@@ -218,7 +218,7 @@ class TypeHelper
                 );
         }
 
-        throw new \Exception("unknown type " . get_class($parentType));
+        throw new \Exception("unknown type " . $parentType::class);
     }
 
     public function createTypeFromDoc(array $doc): Type

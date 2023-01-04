@@ -15,14 +15,8 @@ else
 endif
 
 PHP_VERSION ?= 8.1
-COMPOSER_VERSION ?= 2.3.5
+COMPOSER_VERSION ?= 2.5.1
 COMPOSER_PHAR_URL ?= https://github.com/composer/composer/releases/download/$(COMPOSER_VERSION)/composer.phar
-
-GENERATE_VOLUME :=
-GENERATE_DIR ?=
-ifneq ($(GENERATE_DIR),)
-GENERATE_VOLUME := --volume $(GENERATE_DIR):$(GENERATE_DIR)
-endif
 
 IMAGE_NAME ?= sndsgd/schema
 IMAGE_TAG ?= latest
@@ -31,7 +25,6 @@ DOCKER_RUN ?= $(DOCKER_BIN) run \
 	$(DOCKER_DEFAULT_OPTIONS) \
 	$(DOCKER_RUN_USER) \
 	--volume $(CWD):$(CWD) \
-	$(GENERATE_VOLUME) \
 	--workdir $(CWD) \
 	$(DOCKER_IMAGE)
 
@@ -153,8 +146,22 @@ test-coverage: ## Run unit tests with code coverage
 test-coverage: override PHPUNIT_ARGS = --do-not-cache-result
 test-coverage: prepare-build-directory phpunit
 
+###############################################################################
+# Use the thing ###############################################################
+###############################################################################
+
 .PHONY: generate
-generate: ## Run the generator against GENERATE_DIR
-	$(DOCKER_RUN) $(CWD)/schema generate --render-path "$(GENERATE_DIR)/generated" "$(GENERATE_DIR)"
+generate: composer-install
+	@$(DOCKER_RUN) schema generate \
+		--exclude-path=vendor \
+		--exclude-path=.git \
+		--render-path=build \
+		src \
+		hopes-and-dreams \
+		-vvv
+
+.PHONY: schema
+schema: ## Run the schema generator
+	@$(DOCKER_RUN) schema $(ARGS)
 
 .DEFAULT_GOAL := help
