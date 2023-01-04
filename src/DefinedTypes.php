@@ -177,11 +177,9 @@ class DefinedTypes implements Countable, YamlCallback
 
     private $types = [];
 
-    /**
-     * Require the use of ::create() to create instances of this object
-     */
     private function __construct()
     {
+        // Require the use of ::create() to create instances of this object
     }
 
     public function __debugInfo()

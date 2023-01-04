@@ -82,11 +82,9 @@ class DefinedRules implements Countable
      */
     private $rules = [];
 
-    /**
-     * Require the use of ::create() to create instances of this object
-     */
     private function __construct()
     {
+        // Require the use of ::create() to create instances of this object
     }
 
     public function count(): int

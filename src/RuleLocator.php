@@ -60,7 +60,7 @@ class RuleLocator
 
             // all rules from sndsgd\schema are pre defined so you can exclude
             // the vendor directory to improve location speed.
-            if (in_array($classname, DefinedRules::SNDSGD_SCHEMA_RULES)) {
+            if (in_array($classname, DefinedRules::SNDSGD_SCHEMA_RULES, true)) {
                 continue;
             }
 

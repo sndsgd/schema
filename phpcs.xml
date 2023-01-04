@@ -24,6 +24,7 @@
     <rule ref="SlevomatCodingStandard.Classes.TraitUseSpacing"/>
     <!-- <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements"/> -->
     <rule ref="SlevomatCodingStandard.Classes.UselessLateStaticBinding"/>
+
     <rule ref="SlevomatCodingStandard.Commenting.DisallowOneLinePropertyDocComment"/>
     <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
         <properties>
@@ -35,18 +36,16 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
-    <!-- <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations"/> -->
     <rule ref="SlevomatCodingStandard.Commenting.ForbiddenComments"/>
     <rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration"/>
-    <!-- <rule ref="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/> -->
     <rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
+
     <rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.ControlStructureSpacing"/> -->
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch"/>
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.DisallowEmpty"/> -->
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.DisallowShortTernaryOperator"/> -->
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
-    <!-- <rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit"/> -->
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.LanguageConstructWithParentheses"/> -->
     <rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.NewWithoutParentheses"/> -->
