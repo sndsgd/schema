@@ -34,7 +34,6 @@ class ScalarType extends BaseType
     }
 
     private string $parentName;
-    private $default;
 
     public function __construct(
         string $name,
@@ -44,28 +43,7 @@ class ScalarType extends BaseType
         $default = null,
     ) {
         parent::__construct($name, $description, $rules);
-
-        // verify the default
-        $shortTypeName = self::getTypeName($name, $parentName);
-
-        if ($default !== null) {
-            // we use 'float', php uses 'double'
-            $defaultType = gettype($default);
-            if ($defaultType === "double") {
-                $defaultType = "float";
-            }
-
-            if ($defaultType !== $shortTypeName) {
-                throw new LogicException(
-                    "default type '$defaultType' does not match type '$shortTypeName' for '$name'",
-                );
-            }
-        } else {
-            $default = self::DEFAULTS[$shortTypeName];
-        }
-
         $this->parentName = $parentName;
-        $this->default = $default;
     }
 
     private static function getTypeName(string $name, string $parentName): string
