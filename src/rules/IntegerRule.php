@@ -2,7 +2,10 @@
 
 namespace sndsgd\schema\rules;
 
-final class IntegerRule implements \sndsgd\schema\Rule
+use sndsgd\schema\exceptions\TypeValidationException;
+use sndsgd\schema\Rule;
+
+final class IntegerRule implements Rule
 {
     public static function getName(): string
     {
@@ -51,7 +54,7 @@ final class IntegerRule implements \sndsgd\schema\Rule
         // TODO need to sort out how to handle values greater than
         // PHP_INT_MAX and less than PHP_INT_MIN
 
-        throw new \sndsgd\schema\exceptions\TypeValidationException(
+        throw new TypeValidationException(
             $path,
             $this->getDescription(),
         );

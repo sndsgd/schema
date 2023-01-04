@@ -5,7 +5,9 @@ namespace sndsgd\schema;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use ReflectionClass;
 use sndsgd\Classname;
+use sndsgd\schema\Rule;
 use sndsgd\Str;
 
 class RuleLocator
@@ -62,8 +64,8 @@ class RuleLocator
                 continue;
             }
 
-            $rc = new \ReflectionClass($classname);
-            if ($rc->implementsInterface(\sndsgd\schema\Rule::class)) {
+            $rc = new ReflectionClass($classname);
+            if ($rc->implementsInterface(Rule::class)) {
                 $definedRules->addRule($classname);
                 $ret++;
             }

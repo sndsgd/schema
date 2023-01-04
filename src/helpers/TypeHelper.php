@@ -17,6 +17,8 @@ use sndsgd\schema\types\ObjectType;
 use sndsgd\schema\types\OneOfObjectType;
 use sndsgd\schema\types\OneOfType;
 use sndsgd\schema\types\ScalarType;
+use Throwable;
+use TypeError;
 
 class TypeHelper
 {
@@ -183,7 +185,7 @@ class TypeHelper
                 $valueType = $this->createSubType($name, self::normalizeStringToTypeArray($doc["value"]), "MapValue");
 
                 if (!($keyType instanceof ScalarType)) {
-                    throw new \Exception("'type' must be scalar");
+                    throw new Exception("'type' must be scalar");
                 }
 
                 return new MapType(
@@ -218,7 +220,7 @@ class TypeHelper
                 );
         }
 
-        throw new \Exception("unknown type " . $parentType::class);
+        throw new Exception("unknown type " . $parentType::class);
     }
 
     public function createTypeFromDoc(array $doc): Type
@@ -227,14 +229,14 @@ class TypeHelper
 
         try {
             return $this->rawDocToType($doc);
-        } catch (\Throwable | \TypeError $ex) {
+        } catch (Throwable | TypeError $ex) {
             $message = sprintf(
                 "failed to create type from raw doc; %s:\n%s",
                 $ex->getMessage(),
                 yaml_emit($doc),
             );
 
-            throw new \Exception($message, $ex->getCode(), $ex);
+            throw new Exception($message, $ex->getCode(), $ex);
         }
     }
 
@@ -265,8 +267,8 @@ class TypeHelper
 
             try {
                 $property = new Property($propertyName, $propertyType);
-            } catch (\Throwable | \TypeError $ex) {
-                throw new \Exception("failed to create property", 0, $ex);
+            } catch (Throwable | TypeError $ex) {
+                throw new Exception("failed to create property", 0, $ex);
             }
 
             $properties[] = $property;

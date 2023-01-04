@@ -3,6 +3,7 @@
 namespace sndsgd\schema\rules;
 
 use LogicException;
+use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
 
 final class OptionRule implements Rule
@@ -75,7 +76,7 @@ final class OptionRule implements Rule
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

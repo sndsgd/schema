@@ -2,6 +2,8 @@
 
 namespace sndsgd\schema;
 
+use RecursiveCallbackFilterIterator;
+use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use sndsgd\schema\exceptions\InvalidTypeDefinitionException;
 use sndsgd\schema\helpers\TypeHelper;
@@ -11,6 +13,7 @@ use sndsgd\yaml\Parser;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 use TypeError;
+use UnexpectedValueException;
 
 class TypeLocator
 {
@@ -223,13 +226,13 @@ class TypeLocator
         array $excludePaths
     ): array {
         if (!is_dir($path)) {
-            throw new \UnexpectedValueException(
+            throw new UnexpectedValueException(
                 "failed to search non directory '$path'",
             );
         }
 
-        $dir = new \RecursiveDirectoryIterator($path);
-        $files = new \RecursiveCallbackFilterIterator(
+        $dir = new RecursiveDirectoryIterator($path);
+        $files = new RecursiveCallbackFilterIterator(
             $dir,
             static function ($current, $key, $iterator) use ($excludePaths) {
                 // don't recurse into the directories we want to ignore
@@ -240,7 +243,7 @@ class TypeLocator
                 // only include files that end with the desired extension
                 return (
                     $current->isFile() &&
-                    \sndsgd\Str::endsWith($current->getBasename(), self::TYPE_FILE_SUFFIX)
+                    Str::endsWith($current->getBasename(), self::TYPE_FILE_SUFFIX)
                 );
             },
         );

@@ -2,12 +2,13 @@
 
 namespace sndsgd\schema;
 
+use PHPUnit\Framework\TestCase;
 use sndsgd\schema\exceptions\DuplicateTypeException;
 
 /**
  * @coversDefaultClass \sndsgd\schema\DefinedTypes
  */
-class DefinedTypesTest extends \PHPUnit\Framework\TestCase
+class DefinedTypesTest extends TestCase
 {
     public function testGetBaseTypes(): void
     {

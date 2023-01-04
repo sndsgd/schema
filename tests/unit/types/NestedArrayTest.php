@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\types;
 
+use nestedArrayTest\Test;
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+
 /**
  * @coversDefaultClass \sndsgd\schema\types\ArrayType
  */
-class NestedArrayTest extends \PHPUnit\Framework\TestCase
+class NestedArrayTest extends TestCase
 {
     protected const DOC = <<<YAML
 ---
@@ -46,8 +50,8 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \nestedArrayTest\Test($value, $path);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+            $instance = new Test($value, $path);
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -107,9 +111,9 @@ YAML;
         try {
             $this->assertSame(
                 $expect,
-                (new \nestedArrayTest\Test($value))->jsonSerialize(),
+                (new Test($value))->jsonSerialize(),
             );
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),
@@ -137,7 +141,7 @@ YAML;
 
     public function testGetters(): void
     {
-        $value = new \nestedArrayTest\Test([[["1", "2", "3"]]]);
+        $value = new Test([[["1", "2", "3"]]]);
         $this->assertSame([[1, 2, 3]], $value[0]->jsonSerialize());
         $this->assertSame([1, 2, 3], $value[0][0]->jsonSerialize());
         $this->assertSame(1, $value[0][0][0]);

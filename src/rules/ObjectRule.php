@@ -2,7 +2,10 @@
 
 namespace sndsgd\schema\rules;
 
-class ObjectRule implements \sndsgd\schema\Rule
+use sndsgd\schema\exceptions\TypeValidationException;
+use sndsgd\schema\Rule;
+
+class ObjectRule implements Rule
 {
     public static function getName(): string
     {
@@ -51,7 +54,7 @@ class ObjectRule implements \sndsgd\schema\Rule
             return (object) $value;
         }
 
-        throw new \sndsgd\schema\exceptions\TypeValidationException(
+        throw new TypeValidationException(
             $path,
             $this->getDescription(),
         );

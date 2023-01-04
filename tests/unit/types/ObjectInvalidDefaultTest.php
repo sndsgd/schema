@@ -2,9 +2,11 @@
 
 namespace sndsgd\schema\types;
 
+use PHPUnit\Framework\TestCase;
 use sndsgd\schema\exceptions\ValidationException;
+use Throwable;
 
-class ObjectInvalidDefaultTest extends \PHPUnit\Framework\TestCase
+class ObjectInvalidDefaultTest extends TestCase
 {
     /**
      * @dataProvider provideInvalidDefault
@@ -17,7 +19,7 @@ class ObjectInvalidDefaultTest extends \PHPUnit\Framework\TestCase
 
         try {
           createTestTypes($yaml);
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             // print_r($ex);
         }
 

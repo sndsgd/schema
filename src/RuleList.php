@@ -6,19 +6,28 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use LogicException;
+use sndsgd\schema\exceptions\DuplicateRuleException;
+use sndsgd\schema\rules\AnyTypeRule;
+use sndsgd\schema\rules\ArrayRule;
+use sndsgd\schema\rules\BooleanRule;
+use sndsgd\schema\rules\FloatRule;
+use sndsgd\schema\rules\IntegerRule;
+use sndsgd\schema\rules\ObjectRule;
+use sndsgd\schema\rules\OneOfRule;
+use sndsgd\schema\rules\StringRule;
 use Traversable;
 
 class RuleList implements Countable, IteratorAggregate
 {
     public const TYPE_RULES = [
-        \sndsgd\schema\rules\AnyTypeRule::class => true,
-        \sndsgd\schema\rules\ArrayRule::class => true,
-        \sndsgd\schema\rules\BooleanRule::class => true,
-        \sndsgd\schema\rules\FloatRule::class => true,
-        \sndsgd\schema\rules\IntegerRule::class => true,
-        \sndsgd\schema\rules\ObjectRule::class => true,
-        \sndsgd\schema\rules\OneOfRule::class => true,
-        \sndsgd\schema\rules\StringRule::class => true,
+        AnyTypeRule::class => true,
+        ArrayRule::class => true,
+        BooleanRule::class => true,
+        FloatRule::class => true,
+        IntegerRule::class => true,
+        ObjectRule::class => true,
+        OneOfRule::class => true,
+        StringRule::class => true,
     ];
 
     /**
@@ -58,7 +67,7 @@ class RuleList implements Countable, IteratorAggregate
             }
 
             if (isset($this->addedClasses[$class])) {
-                throw new \sndsgd\schema\exceptions\DuplicateRuleException(
+                throw new DuplicateRuleException(
                     "failed to add '$class' to rule list multiple times",
                 );
             }
@@ -67,7 +76,7 @@ class RuleList implements Countable, IteratorAggregate
                 !isset(self::TYPE_RULES[$class])
                 && !in_array($typeRuleName, $rule::getAcceptableTypes(), true)
             ) {
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf(
                         "failed to add %s rule when type is %s; " .
                         "acceptable types are [%s]",

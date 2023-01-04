@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\types;
 
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+use type\TestArray;
+
 /**
  * @coversDefaultClass \sndsgd\schema\types\ArrayType
  */
-class ArrayTypeTest extends \PHPUnit\Framework\TestCase
+class ArrayTypeTest extends TestCase
 {
     protected const DOC = <<<YAML
 ---
@@ -32,8 +36,8 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \type\TestArray($value, $path);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+            $instance = new TestArray($value, $path);
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -85,9 +89,9 @@ YAML;
         try {
             $this->assertSame(
                 $expect,
-                (new \type\TestArray($value))->jsonSerialize(),
+                (new TestArray($value))->jsonSerialize(),
             );
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),
@@ -107,7 +111,7 @@ YAML;
 
     public function testArrayAccess(): void
     {
-        $value = new \type\TestArray(["zero", "one", "two"]);
+        $value = new TestArray(["zero", "one", "two"]);
         $this->assertSame("zero", $value[0]);
         $this->assertSame("one", $value[1]);
         $this->assertSame("two", $value[2]);
@@ -117,7 +121,7 @@ YAML;
     {
         $expect = ["zero", "one", "two"];
         $result = [];
-        foreach (new \type\TestArray($expect) as $key => $value) {
+        foreach (new TestArray($expect) as $key => $value) {
             $result[$key] = $value;
         }
         $this->assertSame($expect, $result);

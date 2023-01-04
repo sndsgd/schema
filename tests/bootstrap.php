@@ -1,5 +1,17 @@
 <?php declare(strict_types=1);
 
+use sndsgd\Classname;
+use sndsgd\schema\DefinedRules;
+use sndsgd\schema\DefinedTypes;
+use sndsgd\schema\helpers\TypeHelper;
+use sndsgd\schema\RuleLocator;
+use sndsgd\schema\TypeLocator;
+use sndsgd\schema\YamlParserContext;
+use sndsgd\Str;
+use sndsgd\yaml\callbacks\SecondsCallback;
+use sndsgd\yaml\Parser;
+use Symfony\Component\Console\Output\BufferedOutput;
+
 const BUILD_DIR = __DIR__ . "/../build/tests";
 
 require __DIR__ . "/../vendor/autoload.php";
@@ -28,25 +40,25 @@ function createTestTypes(string $yaml): string
     $searchPaths = [$schemaDir];
     $excludePaths = [];
 
-    $definedRules = \sndsgd\schema\DefinedRules::create();
-    $ruleLocator = new \sndsgd\schema\RuleLocator();
+    $definedRules = DefinedRules::create();
+    $ruleLocator = new RuleLocator();
     $ruleLocator->locate($definedRules, $searchPaths, $excludePaths);
 
-    $definedTypes = \sndsgd\schema\DefinedTypes::create();
+    $definedTypes = DefinedTypes::create();
 
-    $parserContext = new \sndsgd\schema\YamlParserContext($definedTypes);
+    $parserContext = new YamlParserContext($definedTypes);
     $parserCallbacks = array_merge(
-        [\sndsgd\yaml\callbacks\SecondsCallback::class],
+        [SecondsCallback::class],
         $definedRules->getYamlCallbackClasses(),
         $definedTypes->getYamlCallbackClasses(),
     );
-    $parser = new \sndsgd\yaml\Parser($parserContext, ...$parserCallbacks);
+    $parser = new Parser($parserContext, ...$parserCallbacks);
 
-    $typeLocator = new \sndsgd\schema\TypeLocator();
+    $typeLocator = new TypeLocator();
     $typeLocator->locate(
-        new \sndsgd\schema\helpers\TypeHelper($definedTypes, $definedRules),
+        new TypeHelper($definedTypes, $definedRules),
         $parser,
-        new \Symfony\Component\Console\Output\BufferedOutput(),
+        new BufferedOutput(),
         $searchPaths,
         $excludePaths,
     );
@@ -56,17 +68,17 @@ function createTestTypes(string $yaml): string
     unlink($schemaPath);
     rmdir($schemaDir);
 
-    $filterCallback = new \RecursiveCallbackFilterIterator(
-        new \RecursiveDirectoryIterator(BUILD_DIR, \FilesystemIterator::SKIP_DOTS),
+    $filterCallback = new RecursiveCallbackFilterIterator(
+        new RecursiveDirectoryIterator(BUILD_DIR, FilesystemIterator::SKIP_DOTS),
         static function ($current, $key, $iterator) {
             return (
                 !$current->isFile()
-                || \sndsgd\Str::endsWith($current->getBasename(), ".php")
+                || Str::endsWith($current->getBasename(), ".php")
             );
         },
     );
 
-    foreach (new \RecursiveIteratorIterator($filterCallback) as $file) {
+    foreach (new RecursiveIteratorIterator($filterCallback) as $file) {
         $path = $file->getPathname();
         if (!isset($required[$path])) {
             $required[$path] = true;
@@ -76,5 +88,5 @@ function createTestTypes(string $yaml): string
 
     $docs = yaml_parse($yaml, -1);
     $lastDoc = end($docs);
-    return $created[$hash] = \sndsgd\Classname::toString($lastDoc["name"]);
+    return $created[$hash] = Classname::toString($lastDoc["name"]);
 }

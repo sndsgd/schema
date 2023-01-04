@@ -3,17 +3,20 @@
 namespace sndsgd\schema;
 
 use Exception;
+use PHPUnit\Framework\TestCase;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use sndsgd\Arr;
 use sndsgd\schema\ValidationFailure;
 use sndsgd\Str;
 use sndsgd\yaml\exceptions\ParserException;
+use sndsgd\yaml\Parser;
 
 /**
  * @coversNothing
  */
-class FixtureTest extends \PHPUnit\Framework\TestCase
+class FixtureTest extends TestCase
 {
     private static array $data;
 
@@ -47,7 +50,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
     ): array {
         $contents = file_get_contents($path);
         try {
-            $docs = (new \sndsgd\yaml\Parser())->parse($contents, 0);
+            $docs = (new Parser())->parse($contents, 0);
         } catch (ParserException $ex) {
             throw new Exception(
                 $ex->getMessage() . " in '$relpath'",
@@ -105,7 +108,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
             foreach ($tests ?? [] as $index => $testData) {
                 $ret["$relpath:failures:#" . ($index + 1)] = [
                     $classname,
-                    array_values(\sndsgd\Arr::without($testData, "expect")),
+                    array_values(Arr::without($testData, "expect")),
                     $testData["expect"],
                 ];
             }
@@ -147,7 +150,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
 
                 $ret["$relpath:success:#" . ($index + 1)] = [
                     $classname,
-                    array_values(\sndsgd\Arr::without($testData, "expect")),
+                    array_values(Arr::without($testData, "expect")),
                     $testData["expect"],
                 ];
             }
@@ -166,7 +169,7 @@ class FixtureTest extends \PHPUnit\Framework\TestCase
     ): void {
         try {
             $instance = new $class(...$args);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),

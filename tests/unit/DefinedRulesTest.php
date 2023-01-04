@@ -2,32 +2,41 @@
 
 namespace sndsgd\schema;
 
+use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use sndsgd\schema\exceptions\DuplicateRuleException;
 use sndsgd\schema\exceptions\UndefinedRuleException;
+use sndsgd\schema\Rule;
+use sndsgd\schema\rules\ArrayRule;
 use sndsgd\Str;
+use stdClass;
 use UnexpectedValueException;
+use function array_flip;
+use function get_declared_classes;
+use function realpath;
 
 /**
  * @coversDefaultClass \sndsgd\schema\DefinedRules
  */
-class DefinedRulesTest extends \PHPUnit\Framework\TestCase
+class DefinedRulesTest extends TestCase
 {
     // verify all concrete implementations of sndsgd\schema\Rule are
     // defined in the SNDSGD_SCHEMA_RULES constant
     public function testSndsgdSchemaRulesConstant(): void
     {
-        $srcdir = \realpath(__DIR__ . "/../../src");
-        $dir = new \RecursiveDirectoryIterator($srcdir);
-        foreach (new \RecursiveIteratorIterator($dir) as $entity) {
+        $srcdir = realpath(__DIR__ . "/../../src");
+        $dir = new RecursiveDirectoryIterator($srcdir);
+        foreach (new RecursiveIteratorIterator($dir) as $entity) {
             if ($entity->isFile() && $entity->getExtension() === "php") {
                 require_once $entity->getRealPath();
             }
         }
 
-        $definedClasses = \array_flip(DefinedRules::SNDSGD_SCHEMA_RULES);
+        $definedClasses = array_flip(DefinedRules::SNDSGD_SCHEMA_RULES);
         $constName = DefinedRules::class . "::SNDSGD_SCHEMA_RULES";
 
-        foreach (\get_declared_classes() as $class) {
+        foreach (get_declared_classes() as $class) {
             if (!in_array(Rule::class, class_implements($class), true)) {
                 continue;
             }
@@ -70,7 +79,7 @@ class DefinedRulesTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage(
             "failed to add rule; class 'stdClass' does not implement",
         );
-        $rules->addRule(\stdClass::class);
+        $rules->addRule(stdClass::class);
     }
 
     public function testAddRuleDuplicate(): void
@@ -79,12 +88,12 @@ class DefinedRulesTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage(
             "the rule 'array' is already defined by 'sndsgd\\schema\\rules\\ArrayRule'",
         );
-        (DefinedRules::create())->addRule(\sndsgd\schema\rules\ArrayRule::class);
+        (DefinedRules::create())->addRule(ArrayRule::class);
     }
 
     public function testAddRuleInvalidName()
     {
-        $instance = new class() implements \sndsgd\schema\Rule {
+        $instance = new class() implements Rule {
             public static function getName(): string
             {
                 return "000000";

@@ -2,6 +2,8 @@
 
 namespace sndsgd\schema\rules;
 
+use InvalidArgumentException;
+use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
@@ -72,7 +74,7 @@ final class MaxValueRule implements Rule, YamlCallback
         string $description = "must be less than or equal to %s"
     ) {
         if (!self::isValidMaxValue($maxValue)) {
-            throw new \InvalidArgumentException("'maxValue' must be numeric");
+            throw new InvalidArgumentException("'maxValue' must be numeric");
         }
 
         $this->maxValue = strval($maxValue);
@@ -96,7 +98,7 @@ final class MaxValueRule implements Rule, YamlCallback
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

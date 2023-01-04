@@ -2,10 +2,15 @@
 
 namespace sndsgd\schema\types;
 
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+use stdClass;
+use test\TestString;
+
 /**
  * @coversDefaultClass \sndsgd\schema\types\StringType
  */
-class StringTest extends \PHPUnit\Framework\TestCase
+class StringTest extends TestCase
 {
     protected const DOC = <<<YAML
 name: test.TestString
@@ -30,9 +35,9 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \test\TestString($value, $path);
+            $instance = new TestString($value, $path);
             return;
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -59,7 +64,7 @@ YAML;
                 [["path" => "$.test", "message" => "must be a string"]],
             ],
             [
-                new \stdClass(),
+                new stdClass(),
                 "$.foo.bar",
                 [["path" => "$.foo.bar", "message" => "must be a string"]],
             ],
@@ -84,9 +89,9 @@ YAML;
         try {
             $this->assertSame(
                 $expect,
-                (new \test\TestString($value, "$"))->getValue(),
+                (new TestString($value, "$"))->getValue(),
             );
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),

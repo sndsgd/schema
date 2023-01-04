@@ -2,6 +2,8 @@
 
 namespace sndsgd\schema\exceptions;
 
-class UndefinedTypeException extends \Exception
+use Exception;
+
+class UndefinedTypeException extends Exception
 {
 }

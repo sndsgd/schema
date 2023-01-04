@@ -2,6 +2,8 @@
 
 namespace sndsgd\schema\rules;
 
+use InvalidArgumentException;
+use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
@@ -72,7 +74,7 @@ final class MinValueRule implements Rule, YamlCallback
         string $description = "must be greater than or equal to %s"
     ) {
         if (!self::isValidMinValue($minValue)) {
-            throw new \InvalidArgumentException("'minValue' must be numeric");
+            throw new InvalidArgumentException("'minValue' must be numeric");
         }
 
         $this->minValue = $minValue;
@@ -96,7 +98,7 @@ final class MinValueRule implements Rule, YamlCallback
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

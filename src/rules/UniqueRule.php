@@ -3,6 +3,7 @@
 namespace sndsgd\schema\rules;
 
 use LogicException;
+use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
@@ -84,7 +85,7 @@ final class UniqueRule implements Rule, YamlCallback
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

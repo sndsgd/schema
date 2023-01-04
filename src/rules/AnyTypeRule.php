@@ -2,7 +2,9 @@
 
 namespace sndsgd\schema\rules;
 
-final class AnyTypeRule implements \sndsgd\schema\Rule
+use sndsgd\schema\Rule;
+
+final class AnyTypeRule implements Rule
 {
     public static function getName(): string
     {

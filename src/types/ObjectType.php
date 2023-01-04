@@ -2,10 +2,12 @@
 
 namespace sndsgd\schema\types;
 
+use Exception;
 use LogicException;
 use sndsgd\schema\PropertyList;
 use sndsgd\schema\RuleList;
 use sndsgd\schema\Type;
+use Throwable;
 
 class ObjectType extends BaseType
 {
@@ -77,7 +79,7 @@ class ObjectType extends BaseType
 
         foreach ($defaults as $key => $value) {
             if (!$properties->has($key)) {
-                throw new \Exception(
+                throw new Exception(
                     "cannot set default value for undefined property '$key'",
                 );
             }
@@ -86,7 +88,7 @@ class ObjectType extends BaseType
             // default values
             $type = $properties->get($key)->getType();
             if (!$this->isDefaultPossibleForType($type, $value)) {
-                throw new \Exception(
+                throw new Exception(
                     "cannot set default value for '$key'; " .
                     "only scalar and empty arrays are acceptable defaults",
                 );
@@ -95,14 +97,14 @@ class ObjectType extends BaseType
             foreach ($type->getRules() as $rule) {
                 try {
                     $rule->validate($value);
-                } catch (\Throwable $ex) {
+                } catch (Throwable $ex) {
                     $message = sprintf(
                         "failed to set default value for '%s'; %s",
                         $key,
                         $ex->getMessage(),
                     );
 
-                    throw new \Exception($message);
+                    throw new Exception($message);
                 }
             }
 
@@ -121,7 +123,7 @@ class ObjectType extends BaseType
         return $this->getName() === self::BASE_CLASSNAME ? "" : self::BASE_CLASSNAME;
     }
 
-    public function getProperties(): \sndsgd\schema\PropertyList
+    public function getProperties(): PropertyList
     {
         return $this->properties;
     }

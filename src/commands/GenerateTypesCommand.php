@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * The console command that is used to generate model config classes
@@ -212,7 +213,7 @@ class GenerateTypesCommand extends Command
         } catch (ValidationException $ex) {
             self::handleValidationException($ex, $output);
             return false;
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             $output->writeln("failed!");
             throw $ex;
         }
@@ -250,7 +251,7 @@ class GenerateTypesCommand extends Command
         } catch (ValidationException $ex) {
             self::handleValidationException($ex, $output);
             return false;
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             $output->writeln("failed!");
             throw $ex;
         }

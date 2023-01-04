@@ -2,9 +2,11 @@
 
 namespace sndsgd\schema\exceptions;
 
+use Exception;
+
 /**
  * Used to indicate a rule is added to a rule list multiple times
  */
-class DuplicateRuleException extends \Exception
+class DuplicateRuleException extends Exception
 {
 }
