@@ -67,7 +67,7 @@ class ObjectType extends BaseType
             return true;
         }
 
-        return 
+        return
             $type instanceof ArrayType
             && $default === []
         ;

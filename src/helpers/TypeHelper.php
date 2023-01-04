@@ -216,7 +216,6 @@ class TypeHelper
                     $description,
                     $rules,
                     $this->getBaseTypeName($doc["type"]),
-                    $doc["default"] ?? null,
                 );
         }
 

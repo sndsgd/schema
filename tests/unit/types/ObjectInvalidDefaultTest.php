@@ -24,6 +24,7 @@ class ObjectInvalidDefaultTest extends TestCase
         }
 
         $this->assertInstanceOf(ValidationException::class, $ex);
+        assert($ex instanceof ValidationException); // ugh phpstan
         $this->assertSame($ex->getMessage(), "validation failed");
 
         // verify that the error message actually matches what went wrong
@@ -75,8 +76,8 @@ class ObjectInvalidDefaultTest extends TestCase
         properties:
           foo:
             type: map
-            key: !type string
-            value: !type string
+            key: string
+            value: string
         defaults:
           foo: []
         YAML,

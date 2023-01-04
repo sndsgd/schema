@@ -271,9 +271,8 @@ class TypeLocator
                 continue;
             }
 
-            // $yamlDocs = yaml_parse($yaml, -1);
             foreach ($yamlDocs as $index => $yamlDoc) {
-                if (empty($yamlDoc)) {
+                if ($yamlDoc === []) {
                     continue;
                 }
 

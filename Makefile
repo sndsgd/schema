@@ -119,7 +119,7 @@ cs-fix: phpcbf
 
 PHPSTAN_ARGS ?= --help
 .PHONY: phpstan
-phpstan: image
+phpstan: image lint
 	$(DOCKER_RUN) vendor/bin/phpstan $(PHPSTAN_ARGS)
 
 .PHONY: analyze
@@ -157,7 +157,6 @@ generate: composer-install
 		--exclude-path=.git \
 		--render-path=build \
 		src \
-		hopes-and-dreams \
 		-vvv
 
 .PHONY: schema

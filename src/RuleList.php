@@ -45,7 +45,7 @@ class RuleList implements Countable, IteratorAggregate
     public function __construct(Rule ...$rules)
     {
         if (
-            empty($rules)
+            $rules === []
             || !isset(self::TYPE_RULES[get_class($rules[0])])
         ) {
             throw new LogicException(
