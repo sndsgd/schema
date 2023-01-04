@@ -31,7 +31,7 @@ class ArrayType extends BaseType implements JsonSerializable
         string $name,
         string $description,
         RuleList $rules,
-        Type $value
+        Type $value,
     ) {
         parent::__construct($name, $description, $rules);
         $this->value = $value;

@@ -28,7 +28,7 @@ final class MinLengthRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -57,7 +57,7 @@ final class MinLengthRule implements Rule, YamlCallback
     public function __construct(
         int $minLength,
         string $summary = "minLength:%d",
-        string $description = "must be at least %d characters"
+        string $description = "must be at least %d characters",
     ) {
         if ($minLength < 1) {
             throw new UnexpectedValueException(

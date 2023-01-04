@@ -28,7 +28,7 @@ final class RegexRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -61,7 +61,7 @@ final class RegexRule implements Rule, YamlCallback
     public function __construct(
         string $regex,
         string $summary = "regex:%s",
-        string $description = "must match a regular expression '%s'"
+        string $description = "must match a regular expression '%s'",
     ) {
         if (@preg_match($regex, "") === false) {
             throw new UnexpectedValueException("'$regex' is not a valid regex");

@@ -41,7 +41,7 @@ class ScalarType extends BaseType
         string $description,
         RuleList $rules,
         string $parentName,
-        $default = null
+        $default = null,
     ) {
         parent::__construct($name, $description, $rules);
 

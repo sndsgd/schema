@@ -35,7 +35,7 @@ class GenerateTypesCommand extends Command
         ?DefinedRules $definedRules = null,
         ?RuleLocator $ruleLocator = null,
         ?DefinedTypes $definedTypes = null,
-        ?TypeLocator $typeLocator = null
+        ?TypeLocator $typeLocator = null,
     ) {
         parent::__construct($name);
 
@@ -120,7 +120,7 @@ class GenerateTypesCommand extends Command
 
     private static function verifySearchPaths(
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
     ): ?array {
         $searchPaths = [];
         $errors = 0;
@@ -151,7 +151,7 @@ class GenerateTypesCommand extends Command
 
     private static function verifyExcludePaths(
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
     ): ?array {
         $excludePaths = [];
         $errors = 0;
@@ -176,7 +176,7 @@ class GenerateTypesCommand extends Command
 
     private static function verifyRenderPath(
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
     ): string {
         $path = $input->getOption("render-path");
         if ($path === null) {
@@ -201,7 +201,7 @@ class GenerateTypesCommand extends Command
     private function locateRules(
         OutputInterface $output,
         array $searchPaths,
-        array $excludePaths = []
+        array $excludePaths = [],
     ): bool {
         $output->write("searching for rules... ");
         try {
@@ -234,7 +234,7 @@ class GenerateTypesCommand extends Command
     private function locateTypes(
         OutputInterface $output,
         array $searchPaths,
-        array $excludePaths = []
+        array $excludePaths = [],
     ): bool {
         $output->write("searching for types... ");
         try {
@@ -262,7 +262,7 @@ class GenerateTypesCommand extends Command
 
     private function renderTypes(
         OutputInterface $output,
-        string $renderPath
+        string $renderPath,
     ): bool {
         $output->write("rendering types... ");
         $this->definedTypes->renderClasses($renderPath, $output);
@@ -273,7 +273,7 @@ class GenerateTypesCommand extends Command
 
     private static function handleValidationException(
         ValidationException $ex,
-        OutputInterface $output
+        OutputInterface $output,
     ): void {
         $output->writeln("<fg=red>failed</>");
         $output->writeln("");

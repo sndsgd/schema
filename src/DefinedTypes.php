@@ -55,7 +55,7 @@ class DefinedTypes implements Countable, YamlCallback
         string $tag,
         $value,
         int $flags,
-        ParserContext $context
+        ParserContext $context,
     ) {
         if (!is_scalar($value)) {
             throw new LogicException(
@@ -230,7 +230,7 @@ class DefinedTypes implements Countable, YamlCallback
 
     public function renderClasses(
         string $basedir,
-        ?OutputInterface $output = null
+        ?OutputInterface $output = null,
     ): void {
         ksort($this->types);
 

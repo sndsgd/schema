@@ -21,7 +21,7 @@ final class AnyTypeRule implements Rule
 
     public function __construct(
         string $summary = "type:mixed",
-        string $description = ""
+        string $description = "",
     ) {
         $this->summary = $summary;
         $this->description = $description;

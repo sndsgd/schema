@@ -27,7 +27,7 @@ class OneOfRule implements Rule
     public function __construct(
         array $rules,
         string $summary = "",
-        string $description = ""
+        string $description = "",
     ) {
         $this->setRules(...$rules);
         $this->summary = $summary;

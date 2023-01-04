@@ -132,7 +132,7 @@ YAML;
         $value,
         $expectLatitude,
         $expectLongitude,
-        $expectAltitude
+        $expectAltitude,
     ): void
     {
         try {

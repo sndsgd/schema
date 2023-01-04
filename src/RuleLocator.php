@@ -17,7 +17,7 @@ class RuleLocator
     public function locate(
         DefinedRules $definedRules,
         array $searchPaths,
-        array $excludePaths = []
+        array $excludePaths = [],
     ): int {
         $ret = 0;
         foreach ($searchPaths as $path) {
@@ -30,7 +30,7 @@ class RuleLocator
     private function search(
         DefinedRules $definedRules,
         array $excludePaths,
-        string $path
+        string $path,
     ): int {
         $ret = 0;
 

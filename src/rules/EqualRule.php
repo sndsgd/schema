@@ -29,7 +29,7 @@ final class EqualRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -58,7 +58,7 @@ final class EqualRule implements Rule, YamlCallback
     public function __construct(
         $equal,
         string $summary = "equal:%s",
-        string $description = "must be %s"
+        string $description = "must be %s",
     ) {
         $this->equal = $equal;
         $this->summary = $summary;

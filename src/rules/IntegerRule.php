@@ -22,7 +22,7 @@ final class IntegerRule implements Rule
 
     public function __construct(
         string $summary = "type:integer",
-        string $description = "must be an integer"
+        string $description = "must be an integer",
     ) {
         $this->summary = $summary;
         $this->description = $description;

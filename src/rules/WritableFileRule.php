@@ -29,7 +29,7 @@ final class WritableFileRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,7 +55,7 @@ final class WritableFileRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "writable file",
-        string $description = "must be a writable file path"
+        string $description = "must be a writable file path",
     ) {
         $this->summary = $summary;
         $this->description = $description;

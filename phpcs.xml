@@ -60,25 +60,20 @@
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
     <rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
     <!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
-    <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
+
+    <rule ref="SlevomatCodingStandard.Functions.ArrowFunctionDeclaration"/>
+    <rule ref="SlevomatCodingStandard.Functions.DisallowArrowFunction"/>
+    <rule ref="SlevomatCodingStandard.Functions.DisallowEmptyFunction"/>
     <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
-    <!-- <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/> -->
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInClosureUse"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
+    <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
+    <rule ref="SlevomatCodingStandard.Functions.StrictCall"/>
+    <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
+
+
     <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse"/>
-<!--     <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameAfterKeyword">
-        <properties>
-            <property name="keywordsToCheck" type="array">
-                <element value="T_EXTENDS"/>
-                <element value="T_IMPLEMENTS"/>
-            </property>
-        </properties>
-    </rule> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalConstants"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/> -->
     <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine"/>
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceDeclaration"/>
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceSpacing"/>

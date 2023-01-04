@@ -129,7 +129,7 @@ class DefinedRules implements Countable
 
     public function instantiateRule(
         string $name,
-        array $args
+        array $args,
     ): Rule
     {
         $class = $this->rules[$name] ?? "";

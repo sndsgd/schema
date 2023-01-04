@@ -38,7 +38,7 @@ class ObjectType extends BaseType
         RuleList $rules,
         PropertyList $properties,
         array $requiredProperties,
-        array $defaults
+        array $defaults,
     ) {
         // only allow the base object to be created without any properties
         if ($name !== self::BASE_CLASSNAME && count($properties) === 0) {
@@ -60,7 +60,7 @@ class ObjectType extends BaseType
 
     private function isDefaultPossibleForType(
         Type $type,
-        $default
+        $default,
     ): bool
     {
         if ($type instanceof ScalarType) {

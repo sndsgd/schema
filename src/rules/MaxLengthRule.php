@@ -28,7 +28,7 @@ final class MaxLengthRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -57,7 +57,7 @@ final class MaxLengthRule implements Rule, YamlCallback
     public function __construct(
         int $maxLength,
         string $summary = "maxLength:%d",
-        string $description = "must be no longer than %d characters"
+        string $description = "must be no longer than %d characters",
     ) {
         if ($maxLength < 1) {
             throw new UnexpectedValueException(

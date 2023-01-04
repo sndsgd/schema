@@ -22,7 +22,7 @@ class ObjectRule implements Rule
 
     public function __construct(
         string $summary = "type:object",
-        string $description = "must be an object"
+        string $description = "must be an object",
     ) {
         $this->summary = $summary;
         $this->description = $description;

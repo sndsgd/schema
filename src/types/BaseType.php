@@ -17,7 +17,7 @@ abstract class BaseType implements Type
     public function __construct(
         string $name,
         string $description,
-        RuleList $rules
+        RuleList $rules,
     ) {
         if (!preg_match(self::NAME_REGEX, $name)) {
             throw new InvalidArgumentException(

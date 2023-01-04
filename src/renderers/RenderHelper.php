@@ -29,7 +29,7 @@ class RenderHelper
     public static function renderRuleCreateAndValidate(
         Rule $rule,
         string $variableName,
-        bool $translateDescription = true
+        bool $translateDescription = true,
     ): string
     {
         $reflection = new ReflectionClass($rule);

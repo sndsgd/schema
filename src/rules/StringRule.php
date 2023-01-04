@@ -22,7 +22,7 @@ final class StringRule implements Rule
 
     public function __construct(
         string $summary = "type:string",
-        string $description = "must be a string"
+        string $description = "must be a string",
     ) {
         $this->summary = $summary;
         $this->description = $description;

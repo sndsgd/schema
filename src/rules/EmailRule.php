@@ -29,7 +29,7 @@ final class EmailRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,7 +55,7 @@ final class EmailRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "email",
-        string $description = "must be a valid email address"
+        string $description = "must be a valid email address",
     ) {
         $this->summary = $summary;
         $this->description = $description;

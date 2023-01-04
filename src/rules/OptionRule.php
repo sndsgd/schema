@@ -20,7 +20,7 @@ final class OptionRule implements Rule
 
     private static function implodeOptions(
         array $options,
-        string $delimeter = ","
+        string $delimeter = ",",
     ): string {
         $ret = "";
         foreach ($options as $option) {
@@ -39,7 +39,7 @@ final class OptionRule implements Rule
     public function __construct(
         array $options,
         string $summary = "option:[%s]",
-        string $description = "must be one of the following values: %s"
+        string $description = "must be one of the following values: %s",
     ) {
         if ($options === []) {
             throw new LogicException(

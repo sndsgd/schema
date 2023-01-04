@@ -22,7 +22,7 @@ final class FloatRule implements Rule
 
     public function __construct(
         string $summary = "type:float",
-        string $description = "must be a float"
+        string $description = "must be a float",
     ) {
         $this->summary = $summary;
         $this->description = $description;

@@ -29,7 +29,7 @@ final class ReadableFileRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,7 +55,7 @@ final class ReadableFileRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "readable file",
-        string $description = "must be a readable file path"
+        string $description = "must be a readable file path",
     ) {
         $this->summary = $summary;
         $this->description = $description;

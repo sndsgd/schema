@@ -29,7 +29,7 @@ final class MinValueRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -71,7 +71,7 @@ final class MinValueRule implements Rule, YamlCallback
     public function __construct(
         $minValue = 0,
         string $summary = "min:%s",
-        string $description = "must be greater than or equal to %s"
+        string $description = "must be greater than or equal to %s",
     ) {
         if (!self::isValidMinValue($minValue)) {
             throw new InvalidArgumentException("'minValue' must be numeric");

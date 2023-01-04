@@ -29,7 +29,7 @@ final class DateTimeRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,7 +55,7 @@ final class DateTimeRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "datetime:iso8610",
-        string $description = "must be a valid date and time"
+        string $description = "must be a valid date and time",
     ) {
         $this->summary = $summary;
         $this->description = $description;

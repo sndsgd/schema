@@ -41,7 +41,7 @@ class OneOfObjectType extends BaseType
         string $name,
         string $description,
         string $key,
-        array $typeMap
+        array $typeMap,
     ) {
         if ($name !== self::BASE_CLASSNAME && count($typeMap) < 2) {
             throw new Exception(

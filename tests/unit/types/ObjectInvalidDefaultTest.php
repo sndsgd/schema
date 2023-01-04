@@ -13,7 +13,7 @@ class ObjectInvalidDefaultTest extends TestCase
      */
     public function testInvalidDefault(
       string $yaml,
-      string $expectErrorMessage
+      string $expectErrorMessage,
     ): void {
         $ex = null;
 

@@ -29,7 +29,7 @@ final class UniqueRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,7 +55,7 @@ final class UniqueRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "unique",
-        string $description = "all values must be unique"
+        string $description = "all values must be unique",
     ) {
         $this->summary = $summary;
         $this->description = $description;

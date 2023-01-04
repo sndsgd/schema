@@ -29,7 +29,7 @@ final class HostnameRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,7 +55,7 @@ final class HostnameRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "hostname",
-        string $description = "must be a valid hostname"
+        string $description = "must be a valid hostname",
     ) {
         $this->summary = $summary;
         $this->description = $description;

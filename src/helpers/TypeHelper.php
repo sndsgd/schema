@@ -68,7 +68,7 @@ class TypeHelper
 
     public function __construct(
         DefinedTypes $definedTypes,
-        DefinedRules $definedRules
+        DefinedRules $definedRules,
     ) {
         $this->definedTypes = $definedTypes;
         $this->definedRules = $definedRules;
@@ -280,7 +280,7 @@ class TypeHelper
     private function createSubType(
         string $parentClassname,
         array $doc,
-        string $classSuffix
+        string $classSuffix,
     ): Type {
         // if only a type is listed, we can just use that type.
         if (
@@ -316,7 +316,7 @@ class TypeHelper
     private static function mergeRules(
         DefinedRules $definedRules,
         RuleList $existingRules,
-        array $docRules
+        array $docRules,
     ): RuleList {
         $rules = $existingRules->toArray();
 

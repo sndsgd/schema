@@ -24,7 +24,7 @@ class TypeLocator
         Parser $parser,
         OutputInterface $output,
         array $searchPaths,
-        array $excludePaths = []
+        array $excludePaths = [],
     ): void {
         $errors = new ValidationErrorList();
 
@@ -160,7 +160,7 @@ class TypeLocator
         Parser $parser,
         OutputInterface $output,
         array $searchPaths,
-        array $excludePaths
+        array $excludePaths,
     ): array {
         $yamlDocs = [];
 
@@ -202,7 +202,7 @@ class TypeLocator
      */
     private static function getRelativePathForErrors(
         array $searchPaths,
-        string $foundPath
+        string $foundPath,
     ): string {
         $match = "";
         foreach ($searchPaths as $path) {
@@ -223,7 +223,7 @@ class TypeLocator
         OutputInterface $output,
         string $path,
         array $searchPaths,
-        array $excludePaths
+        array $excludePaths,
     ): array {
         if (!is_dir($path)) {
             throw new UnexpectedValueException(

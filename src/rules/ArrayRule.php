@@ -22,7 +22,7 @@ class ArrayRule implements Rule
 
     public function __construct(
         string $summary = "type:array",
-        string $description = "must be an array"
+        string $description = "must be an array",
     ) {
         $this->summary = $summary;
         $this->description = $description;

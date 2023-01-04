@@ -33,7 +33,7 @@ class OneOfType extends BaseType
     public function __construct(
         string $name,
         string $description,
-        Type ...$types
+        Type ...$types,
     ) {
         if ($name !== self::BASE_CLASSNAME && count($types) < 2) {
             throw new Exception(

@@ -53,7 +53,7 @@ class OneOfTypeTest extends TestCase
      */
     public function testDuplicateTypeException(
         array $types,
-        string $expectExceptionMessage
+        string $expectExceptionMessage,
     ): void {
         $this->expectException(Throwable::class);
         $this->expectExceptionMessage($expectExceptionMessage);

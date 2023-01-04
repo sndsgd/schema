@@ -26,7 +26,7 @@ class FixtureTest extends TestCase
     }
 
     private static function getSearchIterator(
-        string $searchPath
+        string $searchPath,
     ): RecursiveIteratorIterator {
         return new RecursiveIteratorIterator(
             new RecursiveCallbackFilterIterator(
@@ -46,7 +46,7 @@ class FixtureTest extends TestCase
 
     private static function splitFixtureContents(
         string $path,
-        string $relpath
+        string $relpath,
     ): array {
         $contents = file_get_contents($path);
         try {
@@ -123,7 +123,7 @@ class FixtureTest extends TestCase
     public function testFailure(
         string $class,
         array $args,
-        array $expectErrors
+        array $expectErrors,
     ): void {
         // initialize these to keep static analysis from complaining
         $instance = null;
@@ -165,7 +165,7 @@ class FixtureTest extends TestCase
     public function testSuccess(
         string $class,
         array $args,
-        $expect
+        $expect,
     ): void {
         try {
             $instance = new $class(...$args);

@@ -23,7 +23,7 @@ final class BooleanRule implements Rule
 
     public function __construct(
         string $summary = "type:boolean",
-        string $description = "must be a boolean"
+        string $description = "must be a boolean",
     ) {
         $this->summary = $summary;
         $this->description = $description;
