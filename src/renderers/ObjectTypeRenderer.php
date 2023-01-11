@@ -141,8 +141,8 @@ class ObjectTypeRenderer
             }
         }
 
+        // all remaining properties are unknown
         $ret .= "\n";
-        $ret .= "        // all remaining properties are unknown\n";
         $ret .= "        foreach (\$values as \$name => \$value) {\n";
         $ret .= "            \$errors->addError(\n";
         $ret .= "                \"\$path.\$name\",\n";
