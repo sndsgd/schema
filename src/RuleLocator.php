@@ -8,7 +8,6 @@ use RecursiveIteratorIterator;
 use ReflectionClass;
 use sndsgd\Classname;
 use sndsgd\schema\Rule;
-use sndsgd\Str;
 
 class RuleLocator
 {

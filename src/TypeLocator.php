@@ -5,13 +5,9 @@ namespace sndsgd\schema;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use sndsgd\schema\exceptions\InvalidTypeDefinitionException;
 use sndsgd\schema\helpers\TypeHelper;
-use sndsgd\Str;
-use sndsgd\yaml\exceptions\ParserException;
 use sndsgd\yaml\Parser;
 use Symfony\Component\Console\Output\OutputInterface;
-use sndsgd\schema\exceptions\ErrorListException;
 use Throwable;
 use TypeError;
 use UnexpectedValueException;
@@ -43,7 +39,6 @@ class TypeLocator
         // repeatedly process the list of all yaml docs until none remain
         do {
             $queueLen = count($yamlDocs);
-            $missingDependencies = [];
             foreach ($yamlDocs as $name => $yamlDoc) {
                 $output->writeln(
                     sprintf("processing %s", $yamlDoc->getDebugPath()),
@@ -57,7 +52,6 @@ class TypeLocator
                             sprintf(
                                 "  '%s' depends on undiscovered type '%s'",
                                 $yamlDoc->getName(),
-                                $yamlDoc->getDebugPath(),
                                 $typeName,
                             ),
                             OutputInterface::VERBOSITY_DEBUG,
@@ -252,7 +246,7 @@ class TypeLocator
                         && str_ends_with($current->getBasename(), ".yaml")
                     );
                 },
-            )
+            ),
         );
     }
 }

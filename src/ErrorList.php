@@ -3,7 +3,6 @@
 namespace sndsgd\schema;
 
 use Countable;
-use LogicException;
 use sndsgd\schema\exceptions\ErrorListException;
 
 // an object used to accumulate errors that can be analyzed

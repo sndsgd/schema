@@ -2,7 +2,6 @@
 
 namespace sndsgd\schema\types;
 
-use LogicException;
 use sndsgd\schema\helpers\TypeHelper;
 use sndsgd\schema\RuleList;
 

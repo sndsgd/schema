@@ -33,7 +33,7 @@ class YamlDoc
         string $searchDir,
         string $path,
         int $index,
-        string $name = ""
+        string $name = "",
     ): string {
         $relpath = substr($path, strlen($searchDir) + 1);
         $message = sprintf("%s:#%s", $relpath, $index);

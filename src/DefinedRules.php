@@ -202,7 +202,7 @@ class DefinedRules implements Countable
                 "properties" => $properties,
                 "required" => $requiredProperties,
                 "defaults" => $defaults,
-            ], function($value) {
+            ], static function($value) {
                 return $value !== [];
             });
         }
