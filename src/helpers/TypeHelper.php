@@ -20,6 +20,7 @@ use sndsgd\schema\types\ScalarType;
 use sndsgd\schema\YamlDoc;
 use Throwable;
 use TypeError;
+use LogicException;
 
 class TypeHelper
 {
@@ -63,31 +64,6 @@ class TypeHelper
         $map = array_flip(self::TYPE_CLASSNAME_MAP);
         return $map[$typeName] ?? $typeName;
     }
-
-    // TODO make the common types usable via aliases
-    public static function addAliases(array $map): void
-    {
-        foreach ($map as $alias => $fullName) {
-            if (isset(self::$aliases[$alias])) {
-                throw new LogicException(
-                    "alias '$alias' is already defined",
-                );
-            }
-            self::$aliases[$alias] = $fullName;
-        }
-    }
-
-    private static array $aliases = [
-        "uint8" => "sndsgd.types.Uint8",
-        "int8" => "sndsgd.types.Int8",
-        "uint16" => "sndsgd.types.Uint16",
-        "int16" => "sndsgd.types.Int16",
-        "uint32" => "sndsgd.types.Uint32",
-        "int16" => "sndsgd.types.Int16",
-        "uint64" => "sndsgd.types.Uint64",
-        "int16" => "sndsgd.types.Int16",
-        "unixTimestamp" => "sndsgd.types.UnixTimestamp",
-    ];
 
     private $definedTypes;
     private $definedRules;

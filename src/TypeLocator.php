@@ -95,7 +95,6 @@ class TypeLocator
                             sprintf(
                                 "failed to locate type '%s'",
                                 $typeName,
-                                $yamlDoc->getName(),
                             ),
                         );
                     }
