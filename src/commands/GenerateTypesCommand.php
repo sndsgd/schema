@@ -4,13 +4,13 @@ namespace sndsgd\schema\commands;
 
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
-use sndsgd\schema\exceptions\ValidationException;
+use sndsgd\schema\exceptions\ErrorListException;
 use sndsgd\schema\helpers\TypeHelper;
 use sndsgd\schema\RuleLocator;
 use sndsgd\schema\TypeLocator;
-use sndsgd\schema\YamlParserContext;
 use sndsgd\yaml\callbacks\SecondsCallback;
 use sndsgd\yaml\Parser;
+use sndsgd\yaml\ParserContext;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -210,8 +210,8 @@ class GenerateTypesCommand extends Command
                 $searchPaths,
                 $excludePaths,
             );
-        } catch (ValidationException $ex) {
-            self::handleValidationException($ex, $output);
+        } catch (ErrorListException $ex) {
+            self::handleErrorListException($ex, $output);
             return false;
         } catch (Throwable $ex) {
             $output->writeln("failed!");
@@ -238,18 +238,18 @@ class GenerateTypesCommand extends Command
     ): bool {
         $output->write("searching for types... ");
         try {
-            $parserContext = new YamlParserContext($this->definedTypes);
-            $parserCallbacks = $this->getYamlCallbackClasses();
-
             $this->typeLocator->locate(
                 new TypeHelper($this->definedTypes, $this->definedRules),
-                new Parser($parserContext, ...$parserCallbacks),
+                new Parser(
+                    new ParserContext(),
+                    ...$this->getYamlCallbackClasses(),
+                ),
                 $output,
                 $searchPaths,
                 $excludePaths,
             );
-        } catch (ValidationException $ex) {
-            self::handleValidationException($ex, $output);
+        } catch (ErrorListException $ex) {
+            self::handleErrorListException($ex, $output);
             return false;
         } catch (Throwable $ex) {
             $output->writeln("failed!");
@@ -271,21 +271,18 @@ class GenerateTypesCommand extends Command
         return true;
     }
 
-    private static function handleValidationException(
-        ValidationException $ex,
+    private static function handleErrorListException(
+        ErrorListException $ex,
         OutputInterface $output,
     ): void {
         $output->writeln("<fg=red>failed</>");
         $output->writeln("");
         $output->writeln("address the following issues and try again:");
-        foreach ($ex->getValidationErrors()->toArray() as $error) {
-            $output->writeln(
-                sprintf(
-                    " <fg=yellow>%s</> → %s",
-                    $error["path"],
-                    $error["message"],
-                ),
-            );
+        foreach ($ex->getErrorList()->getErrors() as $path => $errors) {
+            $output->writeln(sprintf("  <fg=yellow>%s</>", $path));
+            foreach ($errors as $error) {
+                $output->writeln(sprintf("    → %s", $error));
+            }
         }
     }
 }

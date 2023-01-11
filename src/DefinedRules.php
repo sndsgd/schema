@@ -4,6 +4,7 @@ namespace sndsgd\schema;
 
 use Countable;
 use ReflectionMethod;
+use ReflectionNamedType;
 use sndsgd\schema\exceptions\DuplicateRuleException;
 use sndsgd\schema\exceptions\UndefinedRuleException;
 use sndsgd\schema\Rule;
@@ -100,10 +101,13 @@ class DefinedRules implements Countable
             );
         }
 
-        $interface = Rule::class;
-        if (!in_array($interface, class_implements($class), true)) {
+        if (!in_array(Rule::class, class_implements($class), true)) {
             throw new UnexpectedValueException(
-                "failed to add rule; class '$class' does not implement '$interface'",
+                sprintf(
+                    "failed to add rule; class '%s' does not implement '%s'",
+                    $class,
+                    Rule::class,
+                ),
             );
         }
 
@@ -112,7 +116,11 @@ class DefinedRules implements Countable
         // only allow a name to be used once
         if (isset($this->rules[$name])) {
             throw new DuplicateRuleException(
-                "the rule '$name' is already defined by '{$this->rules[$name]}'",
+                sprintf(
+                    "the rule '%s' is already defined by '%s'",
+                    $name,
+                    $this->rules[$name],
+                ),
             );
         }
 
@@ -128,8 +136,7 @@ class DefinedRules implements Countable
     public function instantiateRule(
         string $name,
         array $args,
-    ): Rule
-    {
+    ): Rule {
         $class = $this->rules[$name] ?? "";
         if ($class === "") {
             throw new UndefinedRuleException(
@@ -167,19 +174,21 @@ class DefinedRules implements Countable
                 ],
             ];
             $requiredProperties = ["rule"];
+            $defaults = [];
 
             foreach ($constructor->getParameters() as $parameter) {
                 $name = $parameter->getName();
                 $type = $parameter->getType();
-                if ($type) {
-                    $type = ReflectionUtil::normalizeType(strval($type->getName()));
+                if ($type instanceof ReflectionNamedType) {
+                    $type = $type->getName();
+                    $type = ReflectionUtil::normalizeType(strval($type));
                 } else {
                     $type = "any";
                 }
 
                 $property = ["type" => $type];
                 if ($parameter->isOptional()) {
-                    $property["default"] = $parameter->getDefaultValue();
+                    $defaults[$name] = $parameter->getDefaultValue();
                 } else {
                     $requiredProperties[] = $name;
                 }
@@ -187,12 +196,15 @@ class DefinedRules implements Countable
                 $properties[$name] = $property;
             }
 
-            $ret[] = [
+            $ret[] = array_filter([
                 "name" => $class,
                 "type" => "object",
                 "properties" => $properties,
                 "required" => $requiredProperties,
-            ];
+                "defaults" => $defaults,
+            ], function($value) {
+                return $value !== [];
+            });
         }
 
         return $ret;

@@ -6,10 +6,10 @@ use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\helpers\TypeHelper;
 use sndsgd\schema\RuleLocator;
 use sndsgd\schema\TypeLocator;
-use sndsgd\schema\YamlParserContext;
 use sndsgd\Str;
 use sndsgd\yaml\callbacks\SecondsCallback;
 use sndsgd\yaml\Parser;
+use sndsgd\yaml\ParserContext;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 const BUILD_DIR = __DIR__ . "/../build/tests";
@@ -46,7 +46,8 @@ function createTestTypes(string $yaml): string
 
     $definedTypes = DefinedTypes::create();
 
-    $parserContext = new YamlParserContext($definedTypes);
+    $parserContext = new ParserContext();
+    // $parserContext->set("", $definedTypes);
     $parserCallbacks = array_merge(
         [SecondsCallback::class],
         $definedRules->getYamlCallbackClasses(),

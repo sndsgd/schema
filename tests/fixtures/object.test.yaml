@@ -1,4 +1,5 @@
 ---
+kind: type
 name: fixtures.TestObjectUsername
 type: string
 rules:
@@ -9,6 +10,7 @@ rules:
     must start with a letter and contain only letters,
     numbers, and hyphens
 ---
+kind: type
 name: fixtures.TestObject
 type: object
 properties:

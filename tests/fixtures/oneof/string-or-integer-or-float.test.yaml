@@ -1,10 +1,12 @@
 ---
+kind: type
 name: fixtures.oneof.MinMaxInteger
 type: integer
 rules:
 - !rule/min 0
 - !rule/max 100
 ---
+kind: type
 name: fixtures.oneof.StringOrIntegerOrFloatTest
 type: oneof
 types:

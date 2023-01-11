@@ -19,20 +19,7 @@ class MapTypeRenderer
 
     public function render(): string
     {
-        $classname = RenderHelper::createClassnameFromString($this->type->getName());
-        $namespace = $classname->getNamespace();
-        $classname = $classname->getClass();
-
-        $ret = "";
-        $ret .= "<?php declare(strict_types=1);\n";
-        $ret .= "\n";
-        if ($namespace) {
-            $ret .= "namespace $namespace;\n";
-            $ret .= "\n";
-        }
-        $ret .= RenderHelper::getClassComment($this->type);
-        $ret .= "final class $classname implements \ArrayAccess, \Iterator, \JsonSerializable\n";
-        $ret .= "{\n";
+        $ret = RenderHelper::getClassHeader($this->type);
         $ret .= $this->renderPropertyDefinitions();
         $ret .= "\n";
         $ret .= $this->renderConstructor();

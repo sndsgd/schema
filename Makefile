@@ -43,7 +43,7 @@ IMAGE_ARGS ?= --quiet
 image: ## Build the docker image
 	@echo "building image..."
 	@docker build \
-	  $(IMAGE_ARGS) \
+		$(IMAGE_ARGS) \
 		--build-arg PHP_VERSION=$(PHP_VERSION) \
 		--build-arg COMPOSER_PHAR_URL=$(COMPOSER_PHAR_URL) \
 		--tag $(DOCKER_IMAGE) \
@@ -150,13 +150,19 @@ test-coverage: prepare-build-directory phpunit
 # Use the thing ###############################################################
 ###############################################################################
 
+ARGS ?=
+.PHONY: dev
+dev: ## Run dev.php
+	@$(DOCKER_RUN) php dev.php $(ARGS)
+
 .PHONY: generate
 generate: composer-install
-	@$(DOCKER_RUN) schema generate \
+	@$(DOCKER_RUN) $(CWD)/schema generate \
 		--exclude-path=vendor \
 		--exclude-path=.git \
 		--render-path=build \
 		src \
+		tests/fixtures \
 		-vvv
 
 .PHONY: schema

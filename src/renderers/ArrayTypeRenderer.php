@@ -19,20 +19,13 @@ class ArrayTypeRenderer
 
     public function render(): string
     {
-        $classname = RenderHelper::createClassnameFromString($this->type->getName());
-        $namespace = $classname->getNamespace();
-        $classname = $classname->getClass();
+        $implements = [
+            "\\ArrayAccess",
+            "\\Iterator",
+            "\\JsonSerializable",
+        ];
 
-        $ret = "";
-        $ret .= "<?php declare(strict_types=1);\n";
-        $ret .= "\n";
-        if ($namespace) {
-            $ret .= "namespace $namespace;\n";
-            $ret .= "\n";
-        }
-        $ret .= RenderHelper::getClassComment($this->type);
-        $ret .= "final class $classname implements \ArrayAccess, \Iterator, \JsonSerializable\n";
-        $ret .= "{\n";
+        $ret = RenderHelper::getClassHeader($this->type, $implements);
         $ret .= "    private int \$index = 0;\n";
         $ret .= "    private array \$values = [];\n";
         $ret .= "\n";

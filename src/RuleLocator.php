@@ -45,8 +45,8 @@ class RuleLocator
 
                 // only include files that end with the desired extension
                 return (
-                    $current->isFile() &&
-                    Str::endsWith($current->getBasename(), self::FILE_SUFFIX)
+                    $current->isFile()
+                    && str_ends_with($current->getBasename(), self::FILE_SUFFIX)
                 );
             },
         );

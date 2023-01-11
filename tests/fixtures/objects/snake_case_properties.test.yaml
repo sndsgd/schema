@@ -1,4 +1,5 @@
 ---
+kind: type
 name: fixtures.objects.SnakeCaseProperties
 type: object
 properties:

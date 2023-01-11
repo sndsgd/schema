@@ -17,20 +17,7 @@ class AnyTypeRenderer
 
     public function render(): string
     {
-        $classname = RenderHelper::createClassnameFromString($this->type->getName());
-        $namespace = $classname->getNamespace();
-        $classname = $classname->getClass();
-
-        $ret = "";
-        $ret .= "<?php declare(strict_types=1);\n";
-        $ret .= "\n";
-        if ($namespace) {
-            $ret .= "namespace $namespace;\n";
-            $ret .= "\n";
-        }
-        $ret .= RenderHelper::getClassComment($this->type);
-        $ret .= "final class $classname implements \JsonSerializable\n";
-        $ret .= "{\n";
+        $ret = RenderHelper::getClassHeader($this->type);
         $ret .= "    private $this->typehint \$value;\n";
         $ret .= "\n";
         $ret .= $this->renderConstructor();

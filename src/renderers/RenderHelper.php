@@ -12,6 +12,32 @@ use sndsgd\schema\types\ScalarType;
 
 class RenderHelper
 {
+    public static function getClassHeader(
+        Type $type,
+        array $implements = ["\\JsonSerializable"],
+    ): string {
+        $classname = self::createClassnameFromString($type->getName());
+        $namespace = $classname->getNamespace();
+        $classname = $classname->getClass();
+
+        $implements = implode(", ", $implements);
+
+        $ret = "";
+        $ret .= "<?php declare(strict_types=1);\n";
+        $ret .= "\n";
+        if ($namespace) {
+            $ret .= "namespace $namespace;\n";
+            $ret .= "\n";
+        }
+        $ret .= RenderHelper::getClassComment($type);
+        $ret .= "final class $classname implements $implements\n";
+        $ret .= "{\n";
+        $ret .= RenderHelper::renderTypeFetcher($type);
+        $ret .= "\n";
+
+        return $ret;
+    }
+
     public static function getClassComment(Type $type): string
     {
         return <<<COMMENT
@@ -24,6 +50,20 @@ class RenderHelper
          */
 
         COMMENT;
+    }
+
+    public static function renderTypeFetcher($type): string
+    {
+        $class = $type::class;
+        $serialized = var_export(serialize($type), true);
+
+        $ret = "";
+        $ret .= "    public static function fetchType(): \\$class\n";
+        $ret .= "    {\n";
+        $ret .= "        return unserialize($serialized);\n";
+        $ret .= "    }\n";
+
+        return $ret;
     }
 
     public static function renderRuleCreateAndValidate(

@@ -7,10 +7,12 @@ use sndsgd\Arr;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\InvalidTypeDefinitionException;
+use sndsgd\schema\exceptions\UndefinedTypeException;
 use sndsgd\schema\Property;
 use sndsgd\schema\PropertyList;
 use sndsgd\schema\RuleList;
 use sndsgd\schema\Type;
+use sndsgd\schema\YamlDoc;
 use sndsgd\schema\types\ArrayType;
 use sndsgd\schema\types\MapType;
 use sndsgd\schema\types\ObjectType;
@@ -63,6 +65,31 @@ class TypeHelper
         return $map[$typeName] ?? $typeName;
     }
 
+    // TODO make the common types usable via aliases
+    public static function addAliases(array $map): void
+    {
+        foreach ($map as $alias => $fullName) {
+            if (isset(self::$aliases[$alias])) {
+                throw new LogicException(
+                    "alias '$alias' is already defined",
+                );
+            }
+            self::$aliases[$alias] = $fullName;
+        }
+    }
+
+    private static array $aliases = [
+        "uint8" => "sndsgd.types.Uint8",
+        "int8" => "sndsgd.types.Int8",
+        "uint16" => "sndsgd.types.Uint16",
+        "int16" => "sndsgd.types.Int16",
+        "uint32" => "sndsgd.types.Uint32",
+        "int16" => "sndsgd.types.Int16",
+        "uint64" => "sndsgd.types.Uint64",
+        "int16" => "sndsgd.types.Int16",
+        "unixTimestamp" => "sndsgd.types.UnixTimestamp",
+    ];
+
     private $definedTypes;
     private $definedRules;
 
@@ -91,34 +118,26 @@ class TypeHelper
         return $typeName;
     }
 
-    // it is expected that the caller has context as to what the file,
-    // doc index, and complete doc contain. so it can catch the exception
-    // and report more detail.
-    public function getDependenciesFromDoc(array $doc): array
+    public function getDependenciesForDoc(YamlDoc $doc): array
     {
-        $docType = $doc["type"] ?? "";
-        if ($docType === "") {
-            throw new InvalidTypeDefinitionException("missing required property 'type'");
-        }
-
-        if (!is_string($docType)) {
-            throw new InvalidTypeDefinitionException("invalid type for property 'type'; expecting a string");
-        }
-
-        $baseTypeName = $this->getBaseTypeName($doc["type"]);
+        $baseTypeName = $this->getBaseTypeName($doc->getType());
         $baseClass = self::TYPE_TO_CLASSNAME[$baseTypeName] ?? "";
         if ($baseClass === "") {
-            throw new InvalidTypeDefinitionException(
-                "failed to resolve base type for '$docType'",
-            );
+            return [$doc->getType()];
         }
 
-        return $baseClass::getDependencies($doc);
+        return $baseClass::getDependencies($doc->doc);
     }
 
     public static function normalizeStringToTypeArray($value): array
     {
-        return is_string($value) ? ["type" => $value] : $value;
+        if (is_string($value)) {
+            $value = ["type" => $value];
+        }
+
+        $value["type"] = self::$aliases[$value["type"]] ?? $value["type"];
+
+        return $value;
     }
 
     public function rawDocToType(array $doc): Type
@@ -180,9 +199,16 @@ class TypeHelper
                     $doc["defaults"] ?? $parentType->getDefaults(),
                 );
             case MapType::class:
-
-                $keyType = $this->createSubType($name, self::normalizeStringToTypeArray($doc["key"]), "MapKey");
-                $valueType = $this->createSubType($name, self::normalizeStringToTypeArray($doc["value"]), "MapValue");
+                $keyType = $this->createSubType(
+                    $name,
+                    self::normalizeStringToTypeArray($doc["key"]),
+                    "MapKey",
+                );
+                $valueType = $this->createSubType(
+                    $name,
+                    self::normalizeStringToTypeArray($doc["value"]),
+                    "MapValue",
+                );
 
                 if (!($keyType instanceof ScalarType)) {
                     throw new Exception("'type' must be scalar");
@@ -224,8 +250,6 @@ class TypeHelper
 
     public function createTypeFromDoc(array $doc): Type
     {
-        $doc = self::rewriteRawDoc($doc);
-
         try {
             return $this->rawDocToType($doc);
         } catch (Throwable | TypeError $ex) {
@@ -239,8 +263,11 @@ class TypeHelper
         }
     }
 
-    private function createProperties(string $objectClassname, array $properties, array $docs)
-    {
+    private function createProperties(
+        string $objectClassname,
+        array $properties,
+        array $docs,
+    ): PropertyList {
         foreach ($docs as $propertyName => $doc) {
             if (is_string($doc)) {
                 $doc = ["type" => $doc];
@@ -330,34 +357,5 @@ class TypeHelper
         }
 
         return new RuleList(...$rules);
-    }
-
-    /**
-     * Hack to make objects with `oneof`
-     *
-     * @param array $doc [description]
-     * @return array
-     */
-    public static function rewriteRawDoc(array $doc): array
-    {
-        $type = $doc["type"] ?? "";
-        if (
-            $type !== "object"
-            || isset($doc["properties"])
-            || !isset($doc["oneof"])
-        ) {
-            return $doc;
-        }
-
-        // rewrite the thing to a oneofobject
-        $doc["type"] = "oneofobject";
-        foreach (["key", "types"] as $oneOfKey) {
-            $doc[$oneOfKey] = $doc["oneof"][$oneOfKey];
-        }
-        unset($doc["oneof"]);
-
-        echo yaml_emit($doc);
-
-        return $doc;
     }
 }

@@ -49,7 +49,10 @@ class ArrayType extends BaseType implements JsonSerializable
 
     public function getSignature(): string
     {
-        return "array<" . $this->getValue()->getSignature() . ">";
+        return sprintf(
+            "array<%s>",
+            $this->getValue()->getSignature(),
+        );
     }
 
     // not sure why i'm adding this

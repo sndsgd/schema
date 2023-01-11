@@ -3,7 +3,7 @@
 namespace sndsgd\schema\types;
 
 use PHPUnit\Framework\TestCase;
-use sndsgd\schema\exceptions\ValidationException;
+use sndsgd\schema\exceptions\ErrorListException;
 use Throwable;
 
 class ObjectInvalidDefaultTest extends TestCase
@@ -20,18 +20,18 @@ class ObjectInvalidDefaultTest extends TestCase
         try {
           createTestTypes($yaml);
         } catch (Throwable $ex) {
-            // print_r($ex);
+            // do nothing; we inspect the exception below
         }
 
-        $this->assertInstanceOf(ValidationException::class, $ex);
-        assert($ex instanceof ValidationException); // ugh phpstan
-        $this->assertSame($ex->getMessage(), "validation failed");
+        $this->assertInstanceOf(ErrorListException::class, $ex);
+        assert($ex instanceof ErrorListException); // ugh phpstan
+        $this->assertSame($ex->getMessage(), "type definition errors encountered");
 
         // verify that the error message actually matches what went wrong
-        $errors = $ex->getValidationErrors()->toArray();
+        $errors = json_encode($ex->getErrorList()->getErrors());
         $this->assertStringContainsString(
             $expectErrorMessage,
-            $errors[0]["message"],
+            $errors,
         );
     }
 
