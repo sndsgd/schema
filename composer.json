@@ -5,7 +5,7 @@
     "homepage": "https://github.com/sndsgd/schema",
     "autoload": {
         "psr-4": {
-            "sndsgd\\": "src/"
+            "sndsgd\\schema\\": "src/"
         }
     },
     "bin": [

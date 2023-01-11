@@ -150,11 +150,6 @@ test-coverage: prepare-build-directory phpunit
 # Use the thing ###############################################################
 ###############################################################################
 
-ARGS ?=
-.PHONY: dev
-dev: ## Run dev.php
-	@$(DOCKER_RUN) php dev.php $(ARGS)
-
 .PHONY: generate
 generate: composer-install
 	@$(DOCKER_RUN) $(CWD)/schema generate \
