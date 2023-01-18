@@ -6,7 +6,7 @@ use Countable;
 use Exception;
 use sndsgd\schema\exceptions\DuplicateTypeException;
 use sndsgd\schema\exceptions\UndefinedTypeException;
-use sndsgd\schema\helpers\TypeHelper;
+use sndsgd\schema\TypeHelper;
 use sndsgd\schema\renderers\AnyTypeRenderer;
 use sndsgd\schema\renderers\ArrayTypeRenderer;
 use sndsgd\schema\renderers\MapTypeRenderer;
@@ -37,6 +37,27 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DefinedTypes implements Countable
 {
+    private static $instance;
+    public static function getInstance(): self
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = self::create();
+        }
+        return self::$instance;
+    }
+
+    // TODO allow passing in something here so we can add types without
+    // scanning the filesystem.
+    public static function create(): DefinedTypes
+    {
+        $definedTypes = new DefinedTypes();
+        foreach (self::getBaseTypes() as $type) {
+            $definedTypes->addType($type);
+        }
+
+        return $definedTypes;
+    }
+
     private static array $baseTypes = [];
 
     public static function getBaseTypes(): array
@@ -96,6 +117,7 @@ class DefinedTypes implements Countable
                 new OneOfType(
                     OneOfType::BASE_CLASSNAME,
                     "a union type wrapper",
+                    "",
                 ),
                 new OneOfObjectType(
                     OneOfObjectType::BASE_CLASSNAME,
@@ -122,18 +144,6 @@ class DefinedTypes implements Countable
     {
         $typeName = TypeHelper::resolveFullTypeName($typeName);
         return isset(self::getBaseTypes()[$typeName]);
-    }
-
-    // TODO allow passing in something here so we can add types without
-    // scanning the filesystem.
-    public static function create(): DefinedTypes
-    {
-        $definedTypes = new DefinedTypes();
-        foreach (self::getBaseTypes() as $type) {
-            $definedTypes->addType($type);
-        }
-
-        return $definedTypes;
     }
 
     private $types = [];
@@ -233,10 +243,5 @@ class DefinedTypes implements Countable
             // echo "$path\n";
             file_put_contents($path, $php);
         }
-    }
-
-    public function getYamlCallbackClasses(): array
-    {
-        return [];
     }
 }

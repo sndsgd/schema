@@ -55,22 +55,29 @@ class ObjectType extends BaseType
 
     private function setRequiredProperties(string ...$names): void
     {
-        $this->requiredProperties = array_flip($names);
+        $this->requiredProperties = [];
+        foreach ($names as $name) {
+            if (!$this->properties->has($name)) {
+                throw new LogicException(
+                    "undefined property '$name' cannot be required",
+                );
+            }
+            $this->requiredProperties[$name] = $name;
+        }
     }
 
     private function isDefaultPossibleForType(
         Type $type,
         $default,
-    ): bool
-    {
+    ): bool {
         if ($type instanceof ScalarType) {
             return true;
         }
 
-        return
+        return (
             $type instanceof ArrayType
             && $default === []
-        ;
+        );
     }
 
     private function setDefaults(array $defaults): void

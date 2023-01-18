@@ -27,19 +27,19 @@ types:
 - value: ~
   expect:
   - path: "$"
-    message: "must be one of the following types: object<string,string|array<integer>>, array<object<string,string|array<integer>>>"
+    message: "must be one of [fixtures.oneof.OneOrMoreObject, fixtures.oneof.OneOrMoreObjectList]"
 
 - value: 123.456
   expect:
   - path: "$"
-    message: "must be one of the following types: object<string,string|array<integer>>, array<object<string,string|array<integer>>>"
+    message: "must be one of [fixtures.oneof.OneOrMoreObject, fixtures.oneof.OneOrMoreObjectList]"
 
 - value:
     foo: hello!
     list: 123
   expect:
   - path: "$"
-    message: "must be one of the following types: object<string,string|array<integer>>, array<object<string,string|array<integer>>>"
+    message: "must be one of [fixtures.oneof.OneOrMoreObject, fixtures.oneof.OneOrMoreObjectList]"
 
 ---
 

@@ -50,7 +50,7 @@ final class MinLengthRule implements Rule, YamlCallback
         ];
     }
 
-    private int $minLength;
+    public readonly int $minLength;
     private string $summary;
     private string $description;
 

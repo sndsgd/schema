@@ -12,6 +12,7 @@ use sndsgd\schema\rules\AnyTypeRule;
 use sndsgd\schema\rules\ArrayRule;
 use sndsgd\schema\rules\BooleanRule;
 use sndsgd\schema\rules\DateTimeRule;
+use sndsgd\schema\rules\DefinedTypeRule;
 use sndsgd\schema\rules\EmailRule;
 use sndsgd\schema\rules\EqualRule;
 use sndsgd\schema\rules\FloatRule;
@@ -53,6 +54,7 @@ class DefinedRules implements Countable
         AnyTypeRule::class,
         // misc
         DateTimeRule::class,
+        DefinedTypeRule::class,
         EmailRule::class,
         EqualRule::class,
         HostnameRule::class,
@@ -66,6 +68,15 @@ class DefinedRules implements Countable
         UniqueRule::class,
         WritableFileRule::class,
     ];
+
+    private static $instance;
+    public static function getInstance(): self
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = self::create();
+        }
+        return self::$instance;
+    }
 
     public static function create(): DefinedRules
     {
@@ -81,7 +92,7 @@ class DefinedRules implements Countable
      *
      * @var array<string,string>
      */
-    private $rules = [];
+    private array $rules = [];
 
     private function __construct()
     {
@@ -131,6 +142,9 @@ class DefinedRules implements Countable
         }
 
         $this->rules[$name] = $class;
+        // TODO introduce NamedRule interface foo simple rules.
+        // other rules can just use the classname.
+        // $this->rules[$class] = $class;
     }
 
     public function instantiateRule(

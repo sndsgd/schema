@@ -70,25 +70,37 @@ class RenderHelper
         Rule $rule,
         string $variableName,
         bool $translateDescription = true,
-    ): string
-    {
+        bool $includePathArgument = true,
+    ): string {
         $reflection = new ReflectionClass($rule);
         $class = $reflection->getName();
 
         $ret = "";
-        $ret .= "        \$$variableName = (new \\$class(\n";
+        if ($variableName === "this") {
+            $ret .= "        (new \\$class(\n";
+        } else {
+            $ret .= "        \$$variableName = (new \\$class(\n";
+        }
+
         foreach ($reflection->getProperties() as $property) {
             $property->setAccessible(true);
+            $propertyName = $property->getName();
             $value = $property->getValue($rule);
             $value = var_export($value, true);
 
-            if ($translateDescription && $property->getName() === "description") {
+            if ($translateDescription && $propertyName === "description") {
                 $value = "_($value)";
             }
 
-            $ret .= "            $value,\n";
+            $ret .= "            $propertyName: $value,\n";
         }
-        $ret .= "        ))->validate(\$$variableName, \$path);\n\n";
+
+        $args = "\$$variableName";
+        if ($includePathArgument) {
+            $args .= ", \$path";
+        }
+
+        $ret .= "        ))->validate($args);\n\n";
 
         return $ret;
     }

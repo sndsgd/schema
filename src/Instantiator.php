@@ -21,8 +21,13 @@ class Instantiator
     public function instantiate(
         array $args,
     ): mixed {
-        $method = $this->class->getMethod("__construct");
-        $constructorArgs = self::resolveArguments($method, $args);
+        if ($this->class->hasMethod("__construct")) {
+            $method = $this->class->getMethod("__construct");
+            $constructorArgs = self::resolveArguments($method, $args);
+        } else {
+            $constructorArgs = [];
+        }
+
         return $this->class->newInstanceArgs($constructorArgs);
     }
 

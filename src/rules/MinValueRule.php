@@ -57,14 +57,14 @@ final class MinValueRule implements Rule, YamlCallback
             return true;
         }
 
-        return 
+        return
             is_string($value)
             && $value !== ""
             && preg_match("/^-*\d*\.?\d*$/", $value)
         ;
     }
 
-    private $minValue;
+    public readonly string $minValue;
     private string $summary;
     private string $description;
 
@@ -77,7 +77,7 @@ final class MinValueRule implements Rule, YamlCallback
             throw new InvalidArgumentException("'minValue' must be numeric");
         }
 
-        $this->minValue = $minValue;
+        $this->minValue = strval($minValue);
         $this->summary = $summary;
         $this->description = $description;
     }

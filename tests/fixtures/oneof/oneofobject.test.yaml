@@ -48,7 +48,7 @@ types:
     testKey: baz
   expect:
   - path: "$"
-    message: "must be oneof (fixtures.oneofobject.Foo,fixtures.oneofobject.Bar)"
+    message: "must be one of [fixtures.oneofobject.Foo,fixtures.oneofobject.Bar]"
 
 - value:
     testKey: bar

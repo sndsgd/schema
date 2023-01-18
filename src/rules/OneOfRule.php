@@ -71,8 +71,6 @@ class OneOfRule implements Rule
             }
         }
 
-        print_r($nonTypeErrors);
-
         throw new RuleValidationException(
             $path,
             $this->getDescription(),

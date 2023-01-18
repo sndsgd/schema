@@ -25,6 +25,7 @@ DOCKER_RUN ?= $(DOCKER_BIN) run \
 	$(DOCKER_DEFAULT_OPTIONS) \
 	$(DOCKER_RUN_USER) \
 	--volume $(CWD):$(CWD) \
+	--volume $(CWD)/../yaml:$(CWD)/../yaml \
 	--workdir $(CWD) \
 	$(DOCKER_IMAGE)
 

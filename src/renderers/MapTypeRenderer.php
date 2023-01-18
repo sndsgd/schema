@@ -19,7 +19,13 @@ class MapTypeRenderer
 
     public function render(): string
     {
-        $ret = RenderHelper::getClassHeader($this->type);
+        $implements = [
+            "\\ArrayAccess",
+            "\\Iterator",
+            "\\JsonSerializable",
+        ];
+
+        $ret = RenderHelper::getClassHeader($this->type, $implements);
         $ret .= $this->renderPropertyDefinitions();
         $ret .= "\n";
         $ret .= $this->renderConstructor();

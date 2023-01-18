@@ -18,9 +18,15 @@
             "sndsgd\\model\\": ["build/sndsgd/model/"]
         }
     },
+    "repositories": {
+      "dev-package": {
+        "type": "path",
+        "url": "../yaml"
+      }
+    },
     "require": {
         "sndsgd/util": "^2.2",
-        "sndsgd/yaml": "0.0.6",
+        "sndsgd/yaml": "@dev",
         "symfony/console": "^5.2"
     },
     "require-dev": {

@@ -3,7 +3,7 @@
 use sndsgd\Classname;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
-use sndsgd\schema\helpers\TypeHelper;
+use sndsgd\schema\TypeHelper;
 use sndsgd\schema\RuleLocator;
 use sndsgd\schema\TypeLocator;
 use sndsgd\Str;
@@ -40,18 +40,23 @@ function createTestTypes(string $yaml): string
     $searchPaths = [$schemaDir];
     $excludePaths = [];
 
+    $output = new BufferedOutput();
+
     $definedRules = DefinedRules::create();
     $ruleLocator = new RuleLocator();
-    $ruleLocator->locate($definedRules, $searchPaths, $excludePaths);
+    $ruleLocator->locate(
+        $output,
+        $definedRules,
+        $searchPaths,
+        $excludePaths
+    );
 
     $definedTypes = DefinedTypes::create();
 
     $parserContext = new ParserContext();
-    // $parserContext->set("", $definedTypes);
     $parserCallbacks = array_merge(
         [SecondsCallback::class],
         $definedRules->getYamlCallbackClasses(),
-        $definedTypes->getYamlCallbackClasses(),
     );
     $parser = new Parser($parserContext, ...$parserCallbacks);
 
@@ -59,7 +64,7 @@ function createTestTypes(string $yaml): string
     $typeLocator->locate(
         new TypeHelper($definedTypes, $definedRules),
         $parser,
-        new BufferedOutput(),
+        $output,
         $searchPaths,
         $excludePaths,
     );

@@ -35,4 +35,17 @@ class ErrorList implements Countable
     {
         return new ErrorListException($this);
     }
+
+    public function toString(): string
+    {
+        $txt = "";
+        foreach ($this->errors as $path => $errors) {
+            $txt .= "  $path\n";
+            foreach ($errors as $error) {
+                $txt .= "    $error\n";
+            }
+        }
+
+        return $txt;
+    }
 }

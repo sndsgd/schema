@@ -150,13 +150,20 @@ class ObjectTypeRenderer
         $ret .= "            );\n";
         $ret .= "        }\n";
 
-        // remaining rules
+        // we'll only check the top level object's rules if there are
+        // not any other errors
         $rules = array_slice($this->type->getRules()->toArray(), 1);
         if ($rules) {
             $ret .= "\n";
+            $ret .= "        if (count(\$errors) === 0) {\n";
             foreach ($rules as $rule) {
-                $ret .= RenderHelper::renderRuleCreateAndValidate($rule, "value");
+                $ret .= "            try {\n";
+                $ret .= RenderHelper::renderRuleCreateAndValidate($rule, "this");
+                $ret .= "            } catch (\\sndsgd\\schema\\ValidationFailure \$ex) {\n";
+                $ret .= "                \$errors->addErrors(\$ex->getValidationErrors());\n";
+                $ret .= "            }\n";
             }
+            $ret .= "        }\n";
         }
 
         $ret .= "\n";

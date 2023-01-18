@@ -27,6 +27,7 @@ class OneOfTypeTest extends TestCase
         new OneOfType(
             "name",
             "description",
+            "error message",
             ...$types,
         );
     }
@@ -61,6 +62,7 @@ class OneOfTypeTest extends TestCase
         new OneOfType(
             "name",
             "description",
+            "error message",
             ...$types,
         );
     }

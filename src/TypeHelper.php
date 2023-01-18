@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace sndsgd\schema\helpers;
+namespace sndsgd\schema;
 
 use Exception;
 use sndsgd\Arr;
@@ -21,6 +21,7 @@ use sndsgd\schema\YamlDoc;
 use Throwable;
 use TypeError;
 use LogicException;
+use sndsgd\Classname;
 
 class TypeHelper
 {
@@ -54,6 +55,11 @@ class TypeHelper
         "oneofobject" => OneOfObjectType::BASE_CLASSNAME,
     ];
 
+    public static function normalizeClassName(string $typeName): string
+    {
+        return "\\" . implode("\\", Classname::split($typeName));
+    }
+
     public static function resolveFullTypeName(string $typeName): string
     {
         return self::TYPE_CLASSNAME_MAP[$typeName] ?? $typeName;
@@ -65,16 +71,10 @@ class TypeHelper
         return $map[$typeName] ?? $typeName;
     }
 
-    private $definedTypes;
-    private $definedRules;
-
     public function __construct(
-        DefinedTypes $definedTypes,
-        DefinedRules $definedRules,
-    ) {
-        $this->definedTypes = $definedTypes;
-        $this->definedRules = $definedRules;
-    }
+        private DefinedTypes $definedTypes,
+        private DefinedRules $definedRules,
+    ) {}
 
     public function getDefinedTypes(): DefinedTypes
     {
@@ -171,7 +171,7 @@ class TypeHelper
                         $doc["properties"] ?? [],
                     ),
                     array_values($doc["required"] ?? $parentType->getRequiredProperties()),
-                    $doc["defaults"] ?? $parentType->getDefaults(),
+                    array_merge($parentType->getDefaults(), $doc["defaults"] ?? []),
                 );
             case MapType::class:
                 $keyType = $this->createSubType(
@@ -200,6 +200,7 @@ class TypeHelper
                 return new OneOfType(
                     $name,
                     $description,
+                    $doc["errorMessage"] ?? "",
                     ...$this->createOneOfTypes($name, $doc["types"]),
                 );
             case OneOfObjectType::class:

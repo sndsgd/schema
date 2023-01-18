@@ -3,11 +3,11 @@
 namespace sndsgd\schema;
 
 use Exception;
+use sndsgd\yaml\Document as YamlDocument;
 
-class YamlDoc
+class YamlDoc extends YamlDocument
 {
     public static function create(
-        string $searchDir,
         string $path,
         int $index,
         array $doc,
@@ -27,21 +27,6 @@ class YamlDoc
         self::ensureNonEmptyString($doc, "type");
 
         return new self(...func_get_args());
-    }
-
-    public static function renderDebugMessage(
-        string $searchDir,
-        string $path,
-        int $index,
-        string $name = "",
-    ): string {
-        $relpath = substr($path, strlen($searchDir) + 1);
-        $message = sprintf("%s:#%s", $relpath, $index);
-        if ($name === "") {
-            return $message;
-        }
-
-        return sprintf("%s (%s)", $message, $name);
     }
 
     private static function ensureNonEmptyString(
@@ -70,7 +55,6 @@ class YamlDoc
     }
 
     private function __construct(
-        public readonly string $searchDir,
         public readonly string $path,
         public readonly int $index,
         public readonly array $doc,
@@ -84,15 +68,5 @@ class YamlDoc
     public function getType(): string
     {
         return $this->doc["type"];
-    }
-
-    public function getDebugPath(): string
-    {
-        return self::renderDebugMessage(
-            $this->searchDir,
-            $this->path,
-            $this->index,
-            $this->doc["name"],
-        );
     }
 }

@@ -5,7 +5,7 @@ namespace sndsgd\schema;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use sndsgd\schema\helpers\TypeHelper;
+use sndsgd\schema\TypeHelper;
 use sndsgd\yaml\Parser;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -202,10 +202,10 @@ class TypeLocator
                 }
 
                 try {
-                    $doc = YamlDoc::create($path, $filePath, $index, $rawYamlDoc);
+                    $doc = YamlDoc::create($filePath, $index, $rawYamlDoc);
                 } catch (Throwable $ex) {
                     $errors->addError(
-                        YamlDoc::renderDebugMessage($path, $filePath, $index),
+                        "$path/$filePath document#$index",
                         $ex->getMessage(),
                     );
                     continue;

@@ -2,7 +2,7 @@
 
 namespace sndsgd\schema\types;
 
-use sndsgd\schema\helpers\TypeHelper;
+use sndsgd\schema\TypeHelper;
 use sndsgd\schema\RuleList;
 
 class ScalarType extends BaseType

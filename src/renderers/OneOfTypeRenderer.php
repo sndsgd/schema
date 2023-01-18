@@ -6,6 +6,7 @@ use sndsgd\Classname;
 use sndsgd\schema\types\ObjectType;
 use sndsgd\schema\types\OneOfType;
 use sndsgd\schema\types\ScalarType;
+use sndsgd\schema\DefinedTypes;
 
 class OneOfTypeRenderer
 {
@@ -36,7 +37,7 @@ class OneOfTypeRenderer
         // this should really just be true because oneof is always complex
         $isComplex = false;
 
-        $validTypeSignatures = [];
+        $validTypeClasses = [];
 
         // attempt to validate all the different types
         $tmp = "";
@@ -46,7 +47,12 @@ class OneOfTypeRenderer
         foreach ($this->type->getTypes() as $type) {
             $tmp .= $tmp === "" ? "" : "\n";
 
-            $validTypeSignatures[] = $type->getSignature();
+            if (DefinedTypes::isBaseType($type->getName())) {
+                $validTypeClasses[] = $type->getSignature();
+            } else {
+                $validTypeClasses[] = $type->getName();
+            }
+
             $typeClass = "\\" . Classname::toString($type->getName());
 
             $tmp .= "        try {\n";
@@ -95,12 +101,12 @@ class OneOfTypeRenderer
             // TODO do something with all the damn errors
         }
 
-        $validTypeSignatures = implode(", ", $validTypeSignatures);
+        $validTypeClasses = implode(", ", $validTypeClasses);
 
         $ret .= "\n";
         $ret .= "        throw new \\sndsgd\\schema\\exceptions\\RuleValidationException(\n";
         $ret .= "            \$path,\n";
-        $ret .= "            \"must be one of the following types: $validTypeSignatures\"\n";
+        $ret .= "            \"must be one of [$validTypeClasses]\"\n";
         $ret .= "        );\n";
         $ret .= "    }\n";
 

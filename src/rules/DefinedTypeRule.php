@@ -2,16 +2,18 @@
 
 namespace sndsgd\schema\rules;
 
+use LogicException;
 use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class MaxLengthRule implements Rule, YamlCallback
+final class DefinedTypeRule implements Rule, YamlCallback
 {
     public static function getName(): string
     {
-        return "maxLength";
+        return "definedType";
     }
 
     public static function getAcceptableTypes(): array
@@ -21,7 +23,7 @@ final class MaxLengthRule implements Rule, YamlCallback
 
     public static function getYamlCallbackTag(): string
     {
-        return "!rule/maxLength";
+        return "!rule/definedType";
     }
 
     public static function executeYamlCallback(
@@ -38,57 +40,41 @@ final class MaxLengthRule implements Rule, YamlCallback
             );
         }
 
-        if (!is_scalar($value) || !ctype_digit($value)) {
-            throw new UnexpectedValueException(
-                "the '$tag' can only be used with an integer value",
+        if ($value !== "") {
+            throw new LogicException(
+                "the '$tag' yaml callback cannot be used with a value",
             );
         }
 
         return [
             "rule" => self::getName(),
-            "maxLength" => (int) $value,
         ];
     }
 
-    public readonly int $maxLength;
-    private string $summary;
-    private string $description;
-
     public function __construct(
-        int $maxLength,
-        string $summary = "maxLength:%d",
-        string $description = "must be no longer than %d characters",
-    ) {
-        if ($maxLength < 1) {
-            throw new UnexpectedValueException(
-                "'maxLength' must be greater than or equal to 1",
-            );
-        }
-
-        $this->maxLength = $maxLength;
-        $this->summary = $summary;
-        $this->description = $description;
-    }
+        private string $summary = "isDefined",
+        private string $description = "must be a defined type",
+    ) {}
 
     public function getSummary(): string
     {
-        return sprintf($this->summary, $this->maxLength);
+        return $this->summary;
     }
 
     public function getDescription(): string
     {
-        return sprintf($this->description, $this->maxLength);
+        return $this->description;
     }
 
-    public function validate($value, string $path = "$")
+    public function validate($value, string $path = "$"): string
     {
-        if (strlen($value) <= $this->maxLength) {
+        if (DefinedTypes::getInstance()->hasType($value)) {
             return $value;
         }
 
         throw new RuleValidationException(
             $path,
-            $this->getDescription(),
+            "'$value' is undefined",
         );
     }
 }

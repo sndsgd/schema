@@ -57,14 +57,14 @@ final class MaxValueRule implements Rule, YamlCallback
             return true;
         }
 
-        return 
+        return
             is_string($value)
             && $value !== ""
             && preg_match("/^-*\d*\.?\d*$/", $value)
         ;
     }
 
-    private $maxValue;
+    public readonly string $maxValue;
     private string $summary;
     private string $description;
 

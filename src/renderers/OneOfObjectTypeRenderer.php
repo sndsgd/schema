@@ -3,6 +3,7 @@
 namespace sndsgd\schema\renderers;
 
 use sndsgd\Classname;
+use sndsgd\Str;
 use sndsgd\schema\types\OneOfObjectType;
 
 class OneOfObjectTypeRenderer
@@ -17,6 +18,8 @@ class OneOfObjectTypeRenderer
     public function render(): string
     {
         $ret = RenderHelper::getClassHeader($this->type);
+        $ret .= $this->renderKeyConstants();
+        $ret .= "\n";
         $ret .= "    private \$value;\n";
         $ret .= "\n";
         $ret .= $this->renderConstructor();
@@ -25,6 +28,24 @@ class OneOfObjectTypeRenderer
         $ret .= "\n";
         $ret .= $this->renderGetter();
         $ret .= "}\n";
+
+        return $ret;
+    }
+
+    private function renderKeyConstants(): string
+    {
+        $prefix = strtoupper(Str::toSnakeCase($this->type->getKey()));
+
+        $ret = "";
+        foreach ($this->type->getTypeMap() as $typeKeyValue => $oneType) {
+            $name = sprintf(
+                "%s_%s",
+                $prefix,
+                strtoupper(Str::toSnakeCase($typeKeyValue)),
+            );
+
+            $ret .= "    public const $name = \"$typeKeyValue\";\n";
+        }
 
         return $ret;
     }
@@ -72,7 +93,7 @@ class OneOfObjectTypeRenderer
         $ret .= "            default:\n";
         $ret .= "                throw new \\sndsgd\\schema\\exceptions\\RuleValidationException(\n";
         $ret .= "                    \$path,\n";
-        $ret .= "                    \"must be oneof ($implodedTypeNames)\"\n";
+        $ret .= "                    \"must be one of [$implodedTypeNames]\"\n";
         $ret .= "                );\n";
         $ret .= "         }\n";
         $ret .= "    }\n";

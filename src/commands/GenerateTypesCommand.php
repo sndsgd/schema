@@ -5,7 +5,7 @@ namespace sndsgd\schema\commands;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\ErrorListException;
-use sndsgd\schema\helpers\TypeHelper;
+use sndsgd\schema\TypeHelper;
 use sndsgd\schema\RuleLocator;
 use sndsgd\schema\TypeLocator;
 use sndsgd\yaml\callbacks\SecondsCallback;
@@ -206,6 +206,7 @@ class GenerateTypesCommand extends Command
         $output->write("searching for rules... ");
         try {
             $this->ruleLocator->locate(
+                $output,
                 $this->definedRules,
                 $searchPaths,
                 $excludePaths,
@@ -227,7 +228,6 @@ class GenerateTypesCommand extends Command
         return array_merge(
             [SecondsCallback::class],
             $this->definedRules->getYamlCallbackClasses(),
-            $this->definedTypes->getYamlCallbackClasses(),
         );
     }
 

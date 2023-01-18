@@ -20,19 +20,23 @@ types:
 
 - value: ~
   expect:
-  - { path: "$", message: "must be one of the following types: string, integer, float" }
+  - path: "$"
+    message: "must be one of [string, fixtures.oneof.MinMaxInteger, float]"
 
 - value: []
   expect:
-  - { path: "$", message: "must be one of the following types: string, integer, float" }
+  - path: "$"
+    message: "must be one of [string, fixtures.oneof.MinMaxInteger, float]"
 
 - value: { foo: bar }
   expect:
-  - { path: "$", message: "must be one of the following types: string, integer, float" }
+  - path: "$"
+    message: "must be one of [string, fixtures.oneof.MinMaxInteger, float]"
 
 - value: 101
   expect:
-  - { path: "$", message: "must be less than or equal to 100" }
+  - path: "$"
+    message: "must be less than or equal to 100"
 
 ---
 

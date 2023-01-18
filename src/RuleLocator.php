@@ -8,29 +8,39 @@ use RecursiveIteratorIterator;
 use ReflectionClass;
 use sndsgd\Classname;
 use sndsgd\schema\Rule;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class RuleLocator
 {
     private const FILE_SUFFIX = ".php";
 
     public function locate(
+        OutputInterface $output,
         DefinedRules $definedRules,
         array $searchPaths,
         array $excludePaths = [],
     ): int {
+        $output->writeln("", OutputInterface::VERBOSITY_DEBUG);
         $ret = 0;
         foreach ($searchPaths as $path) {
-            $ret += self::search($definedRules, $excludePaths, $path);
+            $ret += self::search(
+                $output,
+                $definedRules,
+                $excludePaths,
+                $path,
+            );
         }
 
         return $ret;
     }
 
     private function search(
+        OutputInterface $output,
         DefinedRules $definedRules,
         array $excludePaths,
         string $path,
     ): int {
+        $output->writeln(" searching $path", OutputInterface::VERBOSITY_DEBUG);
         $ret = 0;
 
         $dir = new RecursiveDirectoryIterator($path);
@@ -65,6 +75,7 @@ class RuleLocator
 
             $rc = new ReflectionClass($classname);
             if ($rc->implementsInterface(Rule::class)) {
+                $output->writeln("  adding $classname", OutputInterface::VERBOSITY_DEBUG);
                 $definedRules->addRule($classname);
                 $ret++;
             }
