@@ -3,10 +3,10 @@
 namespace sndsgd\schema\types;
 
 use Exception;
-use sndsgd\schema\TypeHelper;
 use sndsgd\schema\RuleList;
 use sndsgd\schema\rules\OneOfRule;
 use sndsgd\schema\Type;
+use sndsgd\schema\TypeHelper;
 
 class OneOfType extends BaseType
 {

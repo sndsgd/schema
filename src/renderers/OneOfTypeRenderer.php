@@ -3,10 +3,10 @@
 namespace sndsgd\schema\renderers;
 
 use sndsgd\Classname;
+use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\types\ObjectType;
 use sndsgd\schema\types\OneOfType;
 use sndsgd\schema\types\ScalarType;
-use sndsgd\schema\DefinedTypes;
 
 class OneOfTypeRenderer
 {

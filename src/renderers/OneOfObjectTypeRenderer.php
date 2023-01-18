@@ -3,8 +3,8 @@
 namespace sndsgd\schema\renderers;
 
 use sndsgd\Classname;
-use sndsgd\Str;
 use sndsgd\schema\types\OneOfObjectType;
+use sndsgd\Str;
 
 class OneOfObjectTypeRenderer
 {
@@ -37,7 +37,7 @@ class OneOfObjectTypeRenderer
         $prefix = strtoupper(Str::toSnakeCase($this->type->getKey()));
 
         $ret = "";
-        foreach ($this->type->getTypeMap() as $typeKeyValue => $oneType) {
+        foreach (array_keys($this->type->getTypeMap()) as $typeKeyValue) {
             $name = sprintf(
                 "%s_%s",
                 $prefix,

@@ -4,6 +4,7 @@ namespace sndsgd\schema;
 
 use Exception;
 use sndsgd\Arr;
+use sndsgd\Classname;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\InvalidTypeDefinitionException;
@@ -20,8 +21,6 @@ use sndsgd\schema\types\ScalarType;
 use sndsgd\schema\YamlDoc;
 use Throwable;
 use TypeError;
-use LogicException;
-use sndsgd\Classname;
 
 class TypeHelper
 {

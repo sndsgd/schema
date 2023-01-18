@@ -100,9 +100,7 @@ class RenderHelper
             $args .= ", \$path";
         }
 
-        $ret .= "        ))->validate($args);\n\n";
-
-        return $ret;
+        return $ret . "        ))->validate($args);\n\n";
     }
 
     public static function getTypePsr4Path(string $baseDir, Type $type): string

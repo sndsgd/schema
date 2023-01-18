@@ -3,8 +3,8 @@
 use sndsgd\Classname;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
-use sndsgd\schema\TypeHelper;
 use sndsgd\schema\RuleLocator;
+use sndsgd\schema\TypeHelper;
 use sndsgd\schema\TypeLocator;
 use sndsgd\Str;
 use sndsgd\yaml\callbacks\SecondsCallback;
@@ -48,7 +48,7 @@ function createTestTypes(string $yaml): string
         $output,
         $definedRules,
         $searchPaths,
-        $excludePaths
+        $excludePaths,
     );
 
     $definedTypes = DefinedTypes::create();
