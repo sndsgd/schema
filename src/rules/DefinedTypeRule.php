@@ -6,10 +6,11 @@ use LogicException;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class DefinedTypeRule implements Rule, YamlCallback
+final class DefinedTypeRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {

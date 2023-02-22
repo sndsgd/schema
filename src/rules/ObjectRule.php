@@ -4,8 +4,9 @@ namespace sndsgd\schema\rules;
 
 use sndsgd\schema\exceptions\TypeValidationException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 
-class ObjectRule implements Rule
+class ObjectRule implements Rule, NamedRule
 {
     public static function getName(): string
     {

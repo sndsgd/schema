@@ -71,7 +71,7 @@ class OneOfTypeRenderer
             $tmp .= "            }\n";
             $tmp .= "        } catch (\\sndsgd\\schema\\ValidationFailure \$ex) {\n";
 
-            // if the type is scalar we can bail here because the provide value
+            // if the type is scalar we can bail here because the provided value
             // had the valid type, but something else must have failed
             if ($type instanceof ScalarType) {
                 $tmp .= "            throw \$ex;\n";
@@ -98,7 +98,7 @@ class OneOfTypeRenderer
         $ret .= $tmp;
 
         if ($isComplex) {
-            // TODO do something with all the damn errors
+            // $ret .= "        print_r(\$errors);\n";
         }
 
         $validTypeClasses = implode(", ", $validTypeClasses);

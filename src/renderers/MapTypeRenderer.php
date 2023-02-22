@@ -36,7 +36,9 @@ class MapTypeRenderer
         $ret .= "\n";
         $ret .= $this->renderJsonSerialize();
         $ret .= "\n";
-        $ret .= $this->renderGetter();
+        $ret .= $this->renderGetKeys();
+        $ret .= "\n";
+        $ret .= $this->renderGetValues();
         $ret .= "}\n";
 
         return $ret;
@@ -221,7 +223,18 @@ class MapTypeRenderer
         return $ret;
     }
 
-    private function renderGetter(): string
+    private function renderGetKeys(): string
+    {
+        $ret = "";
+        $ret .= "    public function getKeys(): array\n";
+        $ret .= "    {\n";
+        $ret .= "        return \$this->keys;\n";
+        $ret .= "    }\n";
+
+        return $ret;
+    }
+
+    private function renderGetValues(): string
     {
         $ret = "";
         $ret .= "    public function getValues(): array\n";

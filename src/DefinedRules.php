@@ -8,6 +8,7 @@ use ReflectionNamedType;
 use sndsgd\schema\exceptions\DuplicateRuleException;
 use sndsgd\schema\exceptions\UndefinedRuleException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\rules\AnyTypeRule;
 use sndsgd\schema\rules\ArrayRule;
 use sndsgd\schema\rules\BooleanRule;
@@ -58,6 +59,7 @@ class DefinedRules implements Countable
         EmailRule::class,
         EqualRule::class,
         HostnameRule::class,
+        \sndsgd\schema\rules\MaxDecimalsRule::class,
         MaxLengthRule::class,
         MaxValueRule::class,
         MinLengthRule::class,
@@ -122,7 +124,17 @@ class DefinedRules implements Countable
             );
         }
 
-        $name = $class::getName();
+        $rc = new \ReflectionClass($class);
+        if ($rc->implementsInterface(NamedRule::class)) {
+            $name = $class::getName();
+            if (!preg_match(self::RULE_NAME_REGEX, $name)) {
+                throw new UnexpectedValueException(
+                    "invalid rule name '$name'",
+                );
+            }
+        } else {
+            $name = str_replace("\\", ".", $class);
+        }
 
         // only allow a name to be used once
         if (isset($this->rules[$name])) {
@@ -135,16 +147,7 @@ class DefinedRules implements Countable
             );
         }
 
-        if (!preg_match(self::RULE_NAME_REGEX, $name)) {
-            throw new UnexpectedValueException(
-                "invalid rule name '$name'",
-            );
-        }
-
         $this->rules[$name] = $class;
-        // TODO introduce NamedRule interface foo simple rules.
-        // other rules can just use the classname.
-        // $this->rules[$class] = $class;
     }
 
     public function instantiateRule(

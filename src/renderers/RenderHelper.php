@@ -5,6 +5,7 @@ namespace sndsgd\schema\renderers;
 use ReflectionClass;
 use sndsgd\Classname;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\Type;
 use sndsgd\schema\types\AnyType;
 use sndsgd\schema\types\OneOfObjectType;
@@ -71,15 +72,18 @@ class RenderHelper
         string $variableName,
         bool $translateDescription = true,
         bool $includePathArgument = true,
+        int $indentChars = 8,
     ): string {
         $reflection = new ReflectionClass($rule);
         $class = $reflection->getName();
 
+        $indent = str_repeat(" ", $indentChars);
+
         $ret = "";
         if ($variableName === "this") {
-            $ret .= "        (new \\$class(\n";
+            $ret .= "$indent(new \\$class(\n";
         } else {
-            $ret .= "        \$$variableName = (new \\$class(\n";
+            $ret .= "$indent\$$variableName = (new \\$class(\n";
         }
 
         foreach ($reflection->getProperties() as $property) {
@@ -92,7 +96,7 @@ class RenderHelper
                 $value = "_($value)";
             }
 
-            $ret .= "            $propertyName: $value,\n";
+            $ret .= "$indent    $propertyName: $value,\n";
         }
 
         $args = "\$$variableName";
@@ -100,7 +104,7 @@ class RenderHelper
             $args .= ", \$path";
         }
 
-        return $ret . "        ))->validate($args);\n\n";
+        return $ret . "$indent))->validate($args);\n";
     }
 
     public static function getTypePsr4Path(string $baseDir, Type $type): string

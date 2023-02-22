@@ -6,6 +6,7 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use LogicException;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\exceptions\DuplicateRuleException;
 use sndsgd\schema\rules\AnyTypeRule;
 use sndsgd\schema\rules\ArrayRule;
@@ -31,16 +32,16 @@ class RuleList implements Countable, IteratorAggregate
     ];
 
     /**
-     * A map of all added rule classes for dupe detection
-     *
-     * @var array<string,string>
-     */
-    private array $addedClasses = [];
-
-    /**
      * @var array<Rule>
      */
     private array $rules = [];
+
+    /**
+     * A map of name and/or class to rule instance
+     *
+     * @var array<string,Rule>
+     */
+    private array $rulesByName = [];
 
     public function __construct(Rule ...$rules)
     {
@@ -66,7 +67,7 @@ class RuleList implements Countable, IteratorAggregate
                 );
             }
 
-            if (isset($this->addedClasses[$class])) {
+            if (isset($this->rulesByName[$class])) {
                 throw new DuplicateRuleException(
                     "failed to add '$class' to rule list multiple times",
                 );
@@ -87,8 +88,12 @@ class RuleList implements Countable, IteratorAggregate
                 );
             }
 
-            $this->addedClasses[$class] = $class;
             $this->rules[] = $rule;
+
+            $this->rulesByName[$class] = $rule;
+            if ($rule instanceof NamedRule) {
+                $this->rulesByName[$rule::getName()] = $rule;
+            }
         }
     }
 
@@ -119,12 +124,6 @@ class RuleList implements Countable, IteratorAggregate
 
     public function getRule(string $name): ?Rule
     {
-        foreach ($this->rules as $rule) {
-            if ($rule->getName() === $name) {
-                return $rule;
-            }
-        }
-
-        return null;
+        return $this->rulesByName[$name] ?? null;
     }
 }

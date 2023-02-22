@@ -15,14 +15,25 @@ class ArrayType extends BaseType implements JsonSerializable
      */
     public static function getDependencies(array $doc): array
     {
-        if (is_string($doc["value"])) {
-            $doc["value"] = ["type" => $doc["value"]];
+        // TODO currently this has to be extra safe because
+        // we aren't validating the doc yet.
+        $deps = [];
+        if (array_key_exists("type", $doc) && is_string($doc["type"])) {
+            $deps[] = $doc["type"];
         }
 
-        return [
-            $doc["type"],
-            $doc["value"]["type"],
-        ];
+        if (array_key_exists("value", $doc)) {
+            if (is_string($doc["value"])) {
+                $deps[] = $doc["value"];
+            } elseif (
+                array_key_exists("type", $doc["value"])
+                && is_string($doc["value"]["type"])
+            ) {
+                $deps[] = $doc["value"]["type"];
+            }
+        }
+
+        return $deps;
     }
 
     private Type $value;

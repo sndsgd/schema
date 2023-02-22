@@ -5,8 +5,9 @@ namespace sndsgd\schema\rules;
 use LogicException;
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 
-final class OptionRule implements Rule
+final class OptionRule implements Rule, NamedRule
 {
     public static function getName(): string
     {

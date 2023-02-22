@@ -5,10 +5,11 @@ namespace sndsgd\schema\rules;
 use LogicException;
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class HostnameRule implements Rule, YamlCallback
+final class HostnameRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {

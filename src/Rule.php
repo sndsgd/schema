@@ -5,17 +5,13 @@ namespace sndsgd\schema;
 interface Rule
 {
     /**
-     * Retrieve the name used to reference this rule in schema files
-     *
-     * @return string
-     */
-    public static function getName(): string;
-
-    /**
      * Retrieve a list of the types the rule can be used to validate
      * An empty list indicates that a rule can handle any type.
      *
-     * @return array<string> A list of the rule names as provided by ::getName()
+     * TODO: get this to work with rendered type names.
+     * this would be useful for rules that process objects.
+     *
+     * @return array<string> A list of type names
      */
     public static function getAcceptableTypes(): array;
 

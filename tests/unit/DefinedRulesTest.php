@@ -8,6 +8,7 @@ use RecursiveIteratorIterator;
 use sndsgd\schema\exceptions\DuplicateRuleException;
 use sndsgd\schema\exceptions\UndefinedRuleException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\rules\ArrayRule;
 use sndsgd\Str;
 use stdClass;
@@ -93,7 +94,7 @@ class DefinedRulesTest extends TestCase
 
     public function testAddRuleInvalidName()
     {
-        $instance = new class() implements Rule {
+        $instance = new class() implements Rule, NamedRule {
             public static function getName(): string
             {
                 return "000000";

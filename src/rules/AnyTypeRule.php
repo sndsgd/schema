@@ -3,8 +3,9 @@
 namespace sndsgd\schema\rules;
 
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 
-final class AnyTypeRule implements Rule
+final class AnyTypeRule implements Rule, NamedRule
 {
     public static function getName(): string
     {

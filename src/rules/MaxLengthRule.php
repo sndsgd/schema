@@ -4,10 +4,11 @@ namespace sndsgd\schema\rules;
 
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class MaxLengthRule implements Rule, YamlCallback
+final class MaxLengthRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {
