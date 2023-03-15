@@ -20,7 +20,7 @@
     },
     "require": {
         "sndsgd/util": "^2.2",
-        "sndsgd/yaml": "0.0.6",
+        "sndsgd/yaml": "0.0.7",
         "symfony/console": "^5.2"
     },
     "require-dev": {

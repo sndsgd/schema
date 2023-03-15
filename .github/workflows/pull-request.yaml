@@ -7,22 +7,22 @@ jobs:
     steps:
     - uses: actions/checkout@main
     - name: install dependencies
-      run: make composer-install
+      run: make composer-install PHP_VERSION=8.1
     - name: unit tests
       run: make test PHP_VERSION=8.1
     - name: coding standards
       run: make cs PHP_VERSION=8.1
-    - name: coding standards
+    - name: static analysis
       run: make analyze PHP_VERSION=8.1
   php82:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@main
     - name: install dependencies
-      run: make composer-install
+      run: make composer-install PHP_VERSION=8.2
     - name: unit tests
       run: make test PHP_VERSION=8.2
     - name: coding standards
       run: make cs PHP_VERSION=8.2
-    - name: coding standards
+    - name: static analysis
       run: make analyze PHP_VERSION=8.2

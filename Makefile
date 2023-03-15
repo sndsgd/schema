@@ -124,7 +124,7 @@ test: override PHPUNIT_ARGS = --do-not-cache-result --no-coverage
 test: phpunit
 
 .PHONY: test-coverage
-test-coverage: ## Run unit tests with code coverage
+test-coverage: ## Run unit tests and generate coverage report
 test-coverage: override PHPUNIT_ARGS = --do-not-cache-result
 test-coverage: phpunit
 
