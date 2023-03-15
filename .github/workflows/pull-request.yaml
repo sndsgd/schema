@@ -1,0 +1,19 @@
+name: pull-request
+on:
+  pull_request:
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+    - uses: actions/checkout@main
+    - name: install dependencies
+      run: make composer-install
+    - name: unit tests
+      run: make test
+    - name: coding standards
+      run: make cs
+    - name: coding standards
+      run: make analyze

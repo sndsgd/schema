@@ -8,7 +8,8 @@ use sndsgd\schema\NamedRule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class instanceOfRule implements Rule//, YamlCallback
+// TODO this would be nice to have
+final class instanceOfRule implements Rule
 {
     public static function getName(): string
     {
