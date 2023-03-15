@@ -3,6 +3,7 @@
 namespace sndsgd\schema\rules;
 
 use InvalidArgumentException;
+use LogicException;
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;

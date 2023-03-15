@@ -55,6 +55,14 @@ class RuleList implements Countable, IteratorAggregate
         }
 
         $typeRule = array_shift($rules);
+        if (!($typeRule instanceof NamedRule)) {
+            throw new LogicException(
+                sprintf(
+                    "the type rule (the first rule) must be an instance of '%s'",
+                    NamedRule::class,
+                ),
+            );
+        }
         $typeRuleName = $typeRule::getName();
         $this->rules = [$typeRule];
 
@@ -81,7 +89,7 @@ class RuleList implements Countable, IteratorAggregate
                     sprintf(
                         "failed to add %s rule when type is %s; " .
                         "acceptable types are [%s]",
-                        $rule::getName(),
+                        $class,
                         $typeRuleName,
                         implode(",", $rule::getAcceptableTypes()),
                     ),
@@ -119,7 +127,9 @@ class RuleList implements Countable, IteratorAggregate
 
     public function getTypeName(): string
     {
-        return $this->rules[0]->getName();
+        $typeRule = $this->getTypeRule();
+        assert($typeRule instanceof NamedRule);
+        return $typeRule::getName();
     }
 
     public function getRule(string $name): ?Rule
