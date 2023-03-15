@@ -2,11 +2,14 @@
 
 namespace sndsgd\schema\rules;
 
+use InvalidArgumentException;
+use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class MaxValueRule implements Rule, YamlCallback
+final class MaxValueRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {
@@ -27,7 +30,7 @@ final class MaxValueRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -55,24 +58,24 @@ final class MaxValueRule implements Rule, YamlCallback
             return true;
         }
 
-        return 
+        return
             is_string($value)
             && $value !== ""
             && preg_match("/^-*\d*\.?\d*$/", $value)
         ;
     }
 
-    private $maxValue;
+    public readonly string $maxValue;
     private string $summary;
     private string $description;
 
     public function __construct(
         $maxValue = 0,
         string $summary = "max:%s",
-        string $description = "must be less than or equal to %s"
+        string $description = "must be less than or equal to %s",
     ) {
         if (!self::isValidMaxValue($maxValue)) {
-            throw new \InvalidArgumentException("'maxValue' must be numeric");
+            throw new InvalidArgumentException("'maxValue' must be numeric");
         }
 
         $this->maxValue = strval($maxValue);
@@ -96,7 +99,7 @@ final class MaxValueRule implements Rule, YamlCallback
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\rules;
 
+use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\exceptions\TypeValidationFailure;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;
 use sndsgd\schema\ValidationErrorList;
+use sndsgd\schema\ValidationFailure;
 
-class OneOfRule implements Rule
+class OneOfRule implements Rule, NamedRule
 {
     public static function getName(): string
     {
@@ -24,7 +28,7 @@ class OneOfRule implements Rule
     public function __construct(
         array $rules,
         string $summary = "",
-        string $description = ""
+        string $description = "",
     ) {
         $this->setRules(...$rules);
         $this->summary = $summary;
@@ -57,10 +61,10 @@ class OneOfRule implements Rule
         foreach ($this->types as $class) {
             try {
                 return new $class($value, $path);
-            } catch (\sndsgd\schema\exceptions\TypeValidationFailure $ex) {
+            } catch (TypeValidationFailure $ex) {
                 // if the type failed to validate just continue to the next value
                 continue;
-            } catch (\sndsgd\schema\ValidationFailure $ex) {
+            } catch (ValidationFailure $ex) {
                 // if we get here, this means the type was correct, but an
                 // additional validation rule failed. we may be able to use
                 // the error message if none of the other types validate.
@@ -68,9 +72,7 @@ class OneOfRule implements Rule
             }
         }
 
-        print_r($nonTypeErrors);
-
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

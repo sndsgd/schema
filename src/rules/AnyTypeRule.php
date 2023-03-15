@@ -2,7 +2,10 @@
 
 namespace sndsgd\schema\rules;
 
-final class AnyTypeRule implements \sndsgd\schema\Rule
+use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
+
+final class AnyTypeRule implements Rule, NamedRule
 {
     public static function getName(): string
     {
@@ -19,7 +22,7 @@ final class AnyTypeRule implements \sndsgd\schema\Rule
 
     public function __construct(
         string $summary = "type:mixed",
-        string $description = ""
+        string $description = "",
     ) {
         $this->summary = $summary;
         $this->description = $description;

@@ -12,6 +12,32 @@ use sndsgd\schema\types\ScalarType;
 
 class RenderHelper
 {
+    public static function getClassHeader(
+        Type $type,
+        array $implements = ["\\JsonSerializable"],
+    ): string {
+        $classname = self::createClassnameFromString($type->getName());
+        $namespace = $classname->getNamespace();
+        $classname = $classname->getClass();
+
+        $implements = implode(", ", $implements);
+
+        $ret = "";
+        $ret .= "<?php declare(strict_types=1);\n";
+        $ret .= "\n";
+        if ($namespace) {
+            $ret .= "namespace $namespace;\n";
+            $ret .= "\n";
+        }
+        $ret .= RenderHelper::getClassComment($type);
+        $ret .= "final class $classname implements $implements\n";
+        $ret .= "{\n";
+        $ret .= RenderHelper::renderTypeFetcher($type);
+        $ret .= "\n";
+
+        return $ret;
+    }
+
     public static function getClassComment(Type $type): string
     {
         return <<<COMMENT
@@ -26,31 +52,58 @@ class RenderHelper
         COMMENT;
     }
 
+    public static function renderTypeFetcher($type): string
+    {
+        $class = $type::class;
+        $serialized = var_export(serialize($type), true);
+
+        $ret = "";
+        $ret .= "    public static function fetchType(): \\$class\n";
+        $ret .= "    {\n";
+        $ret .= "        return unserialize($serialized);\n";
+        $ret .= "    }\n";
+
+        return $ret;
+    }
+
     public static function renderRuleCreateAndValidate(
         Rule $rule,
         string $variableName,
-        bool $translateDescription = true
-    ): string
-    {
+        bool $translateDescription = true,
+        bool $includePathArgument = true,
+        int $indentChars = 8,
+    ): string {
         $reflection = new ReflectionClass($rule);
         $class = $reflection->getName();
 
+        $indent = str_repeat(" ", $indentChars);
+
         $ret = "";
-        $ret .= "        \$$variableName = (new \\$class(\n";
+        if ($variableName === "this") {
+            $ret .= "$indent(new \\$class(\n";
+        } else {
+            $ret .= "$indent\$$variableName = (new \\$class(\n";
+        }
+
         foreach ($reflection->getProperties() as $property) {
             $property->setAccessible(true);
+            $propertyName = $property->getName();
             $value = $property->getValue($rule);
             $value = var_export($value, true);
 
-            if ($translateDescription && $property->getName() === "description") {
+            if ($translateDescription && $propertyName === "description") {
                 $value = "_($value)";
             }
 
-            $ret .= "            $value,\n";
+            $ret .= "$indent    $propertyName: $value,\n";
         }
-        $ret .= "        ))->validate(\$$variableName, \$path);\n\n";
 
-        return $ret;
+        $args = "\$$variableName";
+        if ($includePathArgument) {
+            $args .= ", \$path";
+        }
+
+        return $ret . "$indent))->validate($args);\n";
     }
 
     public static function getTypePsr4Path(string $baseDir, Type $type): string

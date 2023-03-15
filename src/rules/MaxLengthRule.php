@@ -2,11 +2,13 @@
 
 namespace sndsgd\schema\rules;
 
+use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class MaxLengthRule implements Rule, YamlCallback
+final class MaxLengthRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {
@@ -27,7 +29,7 @@ final class MaxLengthRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -49,14 +51,14 @@ final class MaxLengthRule implements Rule, YamlCallback
         ];
     }
 
-    private int $maxLength;
+    public readonly int $maxLength;
     private string $summary;
     private string $description;
 
     public function __construct(
         int $maxLength,
         string $summary = "maxLength:%d",
-        string $description = "must be no longer than %d characters"
+        string $description = "must be no longer than %d characters",
     ) {
         if ($maxLength < 1) {
             throw new UnexpectedValueException(
@@ -85,7 +87,7 @@ final class MaxLengthRule implements Rule, YamlCallback
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

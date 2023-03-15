@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\types;
 
+use objectArrayObject\Top;
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+
 /**
  * @coversNothing
  */
-class ObjectArrayObjectTest extends \PHPUnit\Framework\TestCase
+class ObjectArrayObjectTest extends TestCase
 {
     protected const DOC = <<<YAML
 ---
@@ -48,8 +52,8 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \objectArrayObject\Top($value, false, $path);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+            $instance = new Top($value, false, $path);
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -86,9 +90,9 @@ YAML;
         try {
             $this->assertSame(
                 $expect,
-                (new \objectArrayObject\Top($value))->jsonSerialize(),
+                (new Top($value))->jsonSerialize(),
             );
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),
@@ -118,7 +122,7 @@ YAML;
 
     public function testGetters(): void
     {
-        $value = new \objectArrayObject\Top(
+        $value = new Top(
             [
                 "middle" => [
                     ["foo" => "testing..."],

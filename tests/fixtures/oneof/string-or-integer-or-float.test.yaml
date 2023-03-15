@@ -1,10 +1,12 @@
 ---
+kind: type
 name: fixtures.oneof.MinMaxInteger
 type: integer
 rules:
 - !rule/min 0
 - !rule/max 100
 ---
+kind: type
 name: fixtures.oneof.StringOrIntegerOrFloatTest
 type: oneof
 types:
@@ -18,19 +20,23 @@ types:
 
 - value: ~
   expect:
-  - { path: "$", message: "must be one of the following types: string, integer, float" }
+  - path: "$"
+    message: "must be one of [string, fixtures.oneof.MinMaxInteger, float]"
 
 - value: []
   expect:
-  - { path: "$", message: "must be one of the following types: string, integer, float" }
+  - path: "$"
+    message: "must be one of [string, fixtures.oneof.MinMaxInteger, float]"
 
 - value: { foo: bar }
   expect:
-  - { path: "$", message: "must be one of the following types: string, integer, float" }
+  - path: "$"
+    message: "must be one of [string, fixtures.oneof.MinMaxInteger, float]"
 
 - value: 101
   expect:
-  - { path: "$", message: "must be less than or equal to 100" }
+  - path: "$"
+    message: "must be less than or equal to 100"
 
 ---
 

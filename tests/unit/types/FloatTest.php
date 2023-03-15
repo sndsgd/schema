@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\types;
 
+use floatTest\Test;
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+
 /**
  * @coversDefaultClass \sndsgd\schema\types\FloatTest
  */
-class FloatTest extends \PHPUnit\Framework\TestCase
+class FloatTest extends TestCase
 {
     protected const DOC = <<<YAML
 name: floatTest.Test
@@ -32,9 +36,9 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \floatTest\Test($value, $path);
+            $instance = new Test($value, $path);
             return;
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -81,9 +85,9 @@ YAML;
         try {
             $this->assertSame(
                 $expect,
-                (new \floatTest\Test($value, "$"))->getValue(),
+                (new Test($value, "$"))->getValue(),
             );
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),

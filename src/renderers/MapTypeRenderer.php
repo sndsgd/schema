@@ -19,20 +19,13 @@ class MapTypeRenderer
 
     public function render(): string
     {
-        $classname = RenderHelper::createClassnameFromString($this->type->getName());
-        $namespace = $classname->getNamespace();
-        $classname = $classname->getClass();
+        $implements = [
+            "\\ArrayAccess",
+            "\\Iterator",
+            "\\JsonSerializable",
+        ];
 
-        $ret = "";
-        $ret .= "<?php declare(strict_types=1);\n";
-        $ret .= "\n";
-        if ($namespace) {
-            $ret .= "namespace $namespace;\n";
-            $ret .= "\n";
-        }
-        $ret .= RenderHelper::getClassComment($this->type);
-        $ret .= "final class $classname implements \ArrayAccess, \Iterator, \JsonSerializable\n";
-        $ret .= "{\n";
+        $ret = RenderHelper::getClassHeader($this->type, $implements);
         $ret .= $this->renderPropertyDefinitions();
         $ret .= "\n";
         $ret .= $this->renderConstructor();
@@ -43,7 +36,9 @@ class MapTypeRenderer
         $ret .= "\n";
         $ret .= $this->renderJsonSerialize();
         $ret .= "\n";
-        $ret .= $this->renderGetter();
+        $ret .= $this->renderGetKeys();
+        $ret .= "\n";
+        $ret .= $this->renderGetValues();
         $ret .= "}\n";
 
         return $ret;
@@ -228,7 +223,18 @@ class MapTypeRenderer
         return $ret;
     }
 
-    private function renderGetter(): string
+    private function renderGetKeys(): string
+    {
+        $ret = "";
+        $ret .= "    public function getKeys(): array\n";
+        $ret .= "    {\n";
+        $ret .= "        return \$this->keys;\n";
+        $ret .= "    }\n";
+
+        return $ret;
+    }
+
+    private function renderGetValues(): string
     {
         $ret = "";
         $ret .= "    public function getValues(): array\n";

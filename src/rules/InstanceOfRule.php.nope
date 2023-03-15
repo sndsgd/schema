@@ -1,0 +1,86 @@
+<?php declare(strict_types=1);
+
+namespace sndsgd\schema\rules;
+
+use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\Rule;
+use sndsgd\schema\NamedRule;
+use sndsgd\yaml\Callback as YamlCallback;
+use UnexpectedValueException;
+
+// TODO this would be nice to have
+final class instanceOfRule implements Rule
+{
+    public static function getName(): string
+    {
+        return "instanceof";
+    }
+
+    public static function getAcceptableTypes(): array
+    {
+        return ["object"];
+    }
+
+    // public static function getYamlCallbackTag(): string
+    // {
+    //     return "!rule/instanceof";
+    // }
+
+    // public static function executeYamlCallback(
+    //     string $name,
+    //     $value,
+    //     int $flags,
+    //     $context,
+    // ) {
+    //     $tag = self::getYamlCallbackTag();
+
+    //     if ($name !== $tag) {
+    //         throw new UnexpectedValueException(
+    //             "yaml tag name must be '$tag'",
+    //         );
+    //     }
+
+    //     if (
+    //         !is_string($value)
+    //         || $value === ""
+    //         || @preg_match($value, "") === false
+    //     ) {
+    //         throw new UnexpectedValueException(
+    //             "the '$tag' must be used with a valid regex",
+    //         );
+    //     }
+
+    //     return [
+    //         "rule" => self::getName(),
+    //         "regex" => $value,
+    //     ];
+    // }
+
+    public function __construct(
+        private string $typeName,
+        private string $summary = "type:%s",
+        private string $description = "must be an instance of %s",
+    ) {}
+
+    public function getSummary(): string
+    {
+        return sprintf($this->summary, $this->typeName);
+    }
+
+    public function getDescription(): string
+    {
+        return sprintf($this->description, $this->typeName);
+    }
+
+    public function validate($value, string $path = "$"): string
+    {
+        if ($value instanceof $this->typeName) {
+            return $value;
+        }
+
+        throw new LogicException(
+            $path,
+            $this->getDescription(),
+        );
+    }
+}

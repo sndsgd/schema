@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\types;
 
+use nestedObjectTest\Test;
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+
 /**
  * @coversDefaultClass \sndsgd\schema\types\ObjectType
  */
-class NestedObjectTest extends \PHPUnit\Framework\TestCase
+class NestedObjectTest extends TestCase
 {
     protected const DOC = <<<YAML
 ---
@@ -60,8 +64,8 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \nestedObjectTest\Test($value, false, $path);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+            $instance = new Test($value, false, $path);
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -119,9 +123,9 @@ YAML;
         try {
             $this->assertSame(
                 $expect,
-                (new \nestedObjectTest\Test($value))->jsonSerialize(),
+                (new Test($value))->jsonSerialize(),
             );
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),

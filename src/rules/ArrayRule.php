@@ -2,7 +2,11 @@
 
 namespace sndsgd\schema\rules;
 
-class ArrayRule implements \sndsgd\schema\Rule
+use sndsgd\schema\exceptions\TypeValidationException;
+use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
+
+class ArrayRule implements Rule, NamedRule
 {
     public static function getName(): string
     {
@@ -19,7 +23,7 @@ class ArrayRule implements \sndsgd\schema\Rule
 
     public function __construct(
         string $summary = "type:array",
-        string $description = "must be an array"
+        string $description = "must be an array",
     ) {
         $this->summary = $summary;
         $this->description = $description;
@@ -41,7 +45,7 @@ class ArrayRule implements \sndsgd\schema\Rule
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\TypeValidationException(
+        throw new TypeValidationException(
             $path,
             $this->getDescription(),
         );

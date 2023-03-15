@@ -3,17 +3,18 @@
 namespace sndsgd\schema\rules;
 
 use LogicException;
+use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class ReadableFileRule implements Rule, NamedRule, YamlCallback
+final class DefinedTypeRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {
-        return "readableFile";
+        return "definedType";
     }
 
     public static function getAcceptableTypes(): array
@@ -23,7 +24,7 @@ final class ReadableFileRule implements Rule, NamedRule, YamlCallback
 
     public static function getYamlCallbackTag(): string
     {
-        return "!rule/readableFile";
+        return "!rule/definedType";
     }
 
     public static function executeYamlCallback(
@@ -51,16 +52,10 @@ final class ReadableFileRule implements Rule, NamedRule, YamlCallback
         ];
     }
 
-    private string $summary;
-    private string $description;
-
     public function __construct(
-        string $summary = "readable file",
-        string $description = "must be a readable file path",
-    ) {
-        $this->summary = $summary;
-        $this->description = $description;
-    }
+        private string $summary = "isDefined",
+        private string $description = "must be a defined type",
+    ) {}
 
     public function getSummary(): string
     {
@@ -74,14 +69,13 @@ final class ReadableFileRule implements Rule, NamedRule, YamlCallback
 
     public function validate($value, string $path = "$"): string
     {
-        if (is_file($value) && is_readable($value)) {
+        if (DefinedTypes::getInstance()->hasType($value)) {
             return $value;
         }
 
         throw new RuleValidationException(
             $path,
-            $this->getDescription(),
+            "'$value' is undefined",
         );
     }
 }
-

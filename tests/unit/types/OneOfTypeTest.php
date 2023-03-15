@@ -2,29 +2,32 @@
 
 namespace sndsgd\schema\types;
 
+use PHPUnit\Framework\TestCase;
 use sndsgd\schema\RuleList;
 use sndsgd\schema\rules\ArrayRule;
 use sndsgd\schema\rules\IntegerRule;
 use sndsgd\schema\rules\StringRule;
 use sndsgd\schema\types\ArrayType;
 use sndsgd\schema\types\ScalarType;
+use Throwable;
 
 /**
  * @coversDefaultClass \sndsgd\schema\types\OneOfType
  */
-class OneOfTypeTest extends \PHPUnit\Framework\TestCase
+class OneOfTypeTest extends TestCase
 {
     /**
      * @dataProvider provideLessThanTwoTypesException
      */
     public function testLessThanTwoTypesException(array $types)
     {
-        $this->expectException(\Throwable::class);
+        $this->expectException(Throwable::class);
         $this->expectExceptionMessage("a 'oneof' must be defined with at least two types");
 
         new OneOfType(
             "name",
             "description",
+            "error message",
             ...$types,
         );
     }
@@ -51,14 +54,15 @@ class OneOfTypeTest extends \PHPUnit\Framework\TestCase
      */
     public function testDuplicateTypeException(
         array $types,
-        string $expectExceptionMessage
+        string $expectExceptionMessage,
     ): void {
-        $this->expectException(\Throwable::class);
+        $this->expectException(Throwable::class);
         $this->expectExceptionMessage($expectExceptionMessage);
 
         new OneOfType(
             "name",
             "description",
+            "error message",
             ...$types,
         );
     }

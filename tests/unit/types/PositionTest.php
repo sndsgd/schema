@@ -2,10 +2,14 @@
 
 namespace sndsgd\schema\types;
 
+use PHPUnit\Framework\TestCase;
+use sndsgd\schema\ValidationFailure;
+use test\types\Position;
+
 /**
  * @coversNothing
  */
-class PositionTest extends \PHPUnit\Framework\TestCase
+class PositionTest extends TestCase
 {
     protected const DOC = <<<YAML
 ---
@@ -66,8 +70,8 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new \test\types\Position($value, false, $path);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+            $instance = new Position($value, false, $path);
+        } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }
 
@@ -128,12 +132,12 @@ YAML;
         $value,
         $expectLatitude,
         $expectLongitude,
-        $expectAltitude
+        $expectAltitude,
     ): void
     {
         try {
-            $instance = new \test\types\Position($value);
-        } catch (\sndsgd\schema\ValidationFailure $ex) {
+            $instance = new Position($value);
+        } catch (ValidationFailure $ex) {
             $this->fail(
                 "validation failed:\n" .
                 yaml_emit($ex->getValidationErrors()->toArray()),

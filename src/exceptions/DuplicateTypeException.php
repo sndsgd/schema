@@ -2,6 +2,8 @@
 
 namespace sndsgd\schema\exceptions;
 
-class DuplicateTypeException extends \Exception
+use Exception;
+
+class DuplicateTypeException extends Exception
 {
 }

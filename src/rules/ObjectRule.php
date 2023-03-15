@@ -2,7 +2,11 @@
 
 namespace sndsgd\schema\rules;
 
-class ObjectRule implements \sndsgd\schema\Rule
+use sndsgd\schema\exceptions\TypeValidationException;
+use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
+
+class ObjectRule implements Rule, NamedRule
 {
     public static function getName(): string
     {
@@ -19,7 +23,7 @@ class ObjectRule implements \sndsgd\schema\Rule
 
     public function __construct(
         string $summary = "type:object",
-        string $description = "must be an object"
+        string $description = "must be an object",
     ) {
         $this->summary = $summary;
         $this->description = $description;
@@ -51,7 +55,7 @@ class ObjectRule implements \sndsgd\schema\Rule
             return (object) $value;
         }
 
-        throw new \sndsgd\schema\exceptions\TypeValidationException(
+        throw new TypeValidationException(
             $path,
             $this->getDescription(),
         );

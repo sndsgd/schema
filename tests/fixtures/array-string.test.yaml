@@ -1,4 +1,5 @@
 --- # type definition
+kind: type
 name: fixtures.TestStringArray
 type: array
 value:

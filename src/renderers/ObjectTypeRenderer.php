@@ -20,23 +20,13 @@ class ObjectTypeRenderer
 
     public function render(): string
     {
-        $classname = RenderHelper::createClassnameFromString($this->type->getName());
-        $namespace = $classname->getNamespace();
-        $classname = $classname->getClass();
-
-        $ret = "";
-        $ret .= "<?php declare(strict_types=1);\n";
+        $ret = RenderHelper::getClassHeader($this->type);
+        $ret .= $this->renderPropertyDefinitions();
         $ret .= "\n";
-        if ($namespace) {
-            $ret .= "namespace $namespace;\n";
-            $ret .= "\n";
-        }
-        $ret .= RenderHelper::getClassComment($this->type);
-        $ret .= "final class $classname implements \JsonSerializable\n";
-        $ret .= "{\n";
-        $ret .= $this->renderPropertyDefinitions() . "\n";
-        $ret .= $this->renderConstructor() . "\n";
-        $ret .= $this->renderGetters() . "\n";
+        $ret .= $this->renderConstructor();
+        $ret .= "\n";
+        $ret .= $this->renderGetters();
+        $ret .= "\n";
         $ret .= $this->renderJsonSerialize();
         $ret .= "}\n";
 
@@ -60,7 +50,7 @@ class ObjectTypeRenderer
             ) {
                 $ret .= sprintf(
                     "    private $typehint \$$name = %s;\n",
-                    var_export($defaults[$name], true)
+                    var_export($defaults[$name], true),
                 );
             } else {
                 $ret .= "    private $typehint \$$name;\n";
@@ -151,8 +141,8 @@ class ObjectTypeRenderer
             }
         }
 
+        // all remaining properties are unknown
         $ret .= "\n";
-        $ret .= "        // all remaining properties are unknown\n";
         $ret .= "        foreach (\$values as \$name => \$value) {\n";
         $ret .= "            \$errors->addError(\n";
         $ret .= "                \"\$path.\$name\",\n";
@@ -160,13 +150,20 @@ class ObjectTypeRenderer
         $ret .= "            );\n";
         $ret .= "        }\n";
 
-        // remaining rules
+        // we'll only check the top level object's rules if there are
+        // not any other errors
         $rules = array_slice($this->type->getRules()->toArray(), 1);
         if ($rules) {
             $ret .= "\n";
+            $ret .= "        if (count(\$errors) === 0) {\n";
             foreach ($rules as $rule) {
-                $ret .= RenderHelper::renderRuleCreateAndValidate($rule, "value");
+                $ret .= "            try {\n";
+                $ret .= RenderHelper::renderRuleCreateAndValidate($rule, "this");
+                $ret .= "            } catch (\\sndsgd\\schema\\ValidationFailure \$ex) {\n";
+                $ret .= "                \$errors->addErrors(\$ex->getValidationErrors());\n";
+                $ret .= "            }\n";
             }
+            $ret .= "        }\n";
         }
 
         $ret .= "\n";

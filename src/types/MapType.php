@@ -28,7 +28,7 @@ class MapType extends BaseType
         string $description,
         RuleList $rules,
         ScalarType $keyType,
-        Type $valueType
+        Type $valueType,
     ) {
         parent::__construct($name, $description, $rules);
         $this->keyType = $keyType;

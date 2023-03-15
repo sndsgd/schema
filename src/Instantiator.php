@@ -21,8 +21,13 @@ class Instantiator
     public function instantiate(
         array $args,
     ): mixed {
-        $method = $this->class->getMethod("__construct");
-        $constructorArgs = self::resolveArguments($method, $args);
+        if ($this->class->hasMethod("__construct")) {
+            $method = $this->class->getMethod("__construct");
+            $constructorArgs = self::resolveArguments($method, $args);
+        } else {
+            $constructorArgs = [];
+        }
+
         return $this->class->newInstanceArgs($constructorArgs);
     }
 
@@ -49,10 +54,8 @@ class Instantiator
         }
 
         // if any values remain we'll consider the input invalid
-        if (!empty($values)) {
-            $noun = count($values) === 1
-                ? "value"
-                : "values";
+        if ($values !== []) {
+            $noun = count($values) === 1 ? "value" : "values";
             $names = implode(",", array_keys($values));
             throw new LogicException("unknown $noun encountered ($names)");
         }

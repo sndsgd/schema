@@ -3,11 +3,13 @@
 namespace sndsgd\schema\rules;
 
 use LogicException;
+use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class UniqueRule implements Rule, YamlCallback
+final class UniqueRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {
@@ -28,7 +30,7 @@ final class UniqueRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -54,7 +56,7 @@ final class UniqueRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "unique",
-        string $description = "all values must be unique"
+        string $description = "all values must be unique",
     ) {
         $this->summary = $summary;
         $this->description = $description;
@@ -84,7 +86,7 @@ final class UniqueRule implements Rule, YamlCallback
             return $value;
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

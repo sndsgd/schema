@@ -1,7 +1,8 @@
 ---
+kind: type
 name: fixtures.MapStringArrayObjectTest
 type: map
-key: !type string
+key: string
 value:
   type: array
   value:

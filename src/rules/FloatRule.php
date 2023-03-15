@@ -2,7 +2,11 @@
 
 namespace sndsgd\schema\rules;
 
-final class FloatRule implements \sndsgd\schema\Rule
+use sndsgd\schema\exceptions\TypeValidationException;
+use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
+
+final class FloatRule implements Rule, NamedRule
 {
     public static function getName(): string
     {
@@ -19,7 +23,7 @@ final class FloatRule implements \sndsgd\schema\Rule
 
     public function __construct(
         string $summary = "type:float",
-        string $description = "must be a float"
+        string $description = "must be a float",
     ) {
         $this->summary = $summary;
         $this->description = $description;
@@ -52,7 +56,7 @@ final class FloatRule implements \sndsgd\schema\Rule
             return floatval($value);
         }
 
-        throw new \sndsgd\schema\exceptions\TypeValidationException(
+        throw new TypeValidationException(
             $path,
             $this->getDescription(),
         );

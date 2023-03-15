@@ -3,11 +3,13 @@
 namespace sndsgd\schema\rules;
 
 use LogicException;
+use sndsgd\schema\exceptions\RuleValidationException;
+use sndsgd\schema\NamedRule;
 use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
-final class DateTimeRule implements Rule, YamlCallback
+final class DateTimeRule implements Rule, NamedRule, YamlCallback
 {
     public static function getName(): string
     {
@@ -28,7 +30,7 @@ final class DateTimeRule implements Rule, YamlCallback
         string $name,
         $value,
         int $flags,
-        $context
+        $context,
     ) {
         $tag = self::getYamlCallbackTag();
 
@@ -54,7 +56,7 @@ final class DateTimeRule implements Rule, YamlCallback
 
     public function __construct(
         string $summary = "datetime:iso8610",
-        string $description = "must be a valid date and time"
+        string $description = "must be a valid date and time",
     ) {
         $this->summary = $summary;
         $this->description = $description;
@@ -77,7 +79,7 @@ final class DateTimeRule implements Rule, YamlCallback
             return date("c", $timestamp);
         }
 
-        throw new \sndsgd\schema\exceptions\RuleValidationException(
+        throw new RuleValidationException(
             $path,
             $this->getDescription(),
         );

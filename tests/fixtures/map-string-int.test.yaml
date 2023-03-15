@@ -1,16 +1,19 @@
 ---
+kind: type
 name: fixtures.MapKeyTest
 type: string
 rules:
 - !rule/minLength 3
 - !rule/maxLength 20
 ---
+kind: type
 name: fixtures.MapValueTest
 type: integer
 rules:
 - !rule/min 0
 - !rule/max 255
 ---
+kind: type
 name: fixtures.MapTest
 type: map
 key:

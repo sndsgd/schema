@@ -3,8 +3,38 @@
 namespace sndsgd\schema;
 
 use Countable;
+use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
+use sndsgd\schema\exceptions\DuplicateRuleException;
+use sndsgd\schema\exceptions\UndefinedRuleException;
+use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
+use sndsgd\schema\rules\AnyTypeRule;
+use sndsgd\schema\rules\ArrayRule;
+use sndsgd\schema\rules\BooleanRule;
+use sndsgd\schema\rules\DateTimeRule;
+use sndsgd\schema\rules\DefinedTypeRule;
+use sndsgd\schema\rules\EmailRule;
+use sndsgd\schema\rules\EqualRule;
+use sndsgd\schema\rules\FloatRule;
+use sndsgd\schema\rules\HostnameRule;
+use sndsgd\schema\rules\IntegerRule;
+use sndsgd\schema\rules\MaxDecimalsRule;
+use sndsgd\schema\rules\MaxLengthRule;
+use sndsgd\schema\rules\MaxValueRule;
+use sndsgd\schema\rules\MinLengthRule;
+use sndsgd\schema\rules\MinValueRule;
+use sndsgd\schema\rules\ObjectRule;
+use sndsgd\schema\rules\OneOfRule;
+use sndsgd\schema\rules\OptionRule;
+use sndsgd\schema\rules\ReadableFileRule;
+use sndsgd\schema\rules\RegexRule;
+use sndsgd\schema\rules\StringRule;
+use sndsgd\schema\rules\UniqueRule;
+use sndsgd\schema\rules\WritableFileRule;
 use sndsgd\yaml\Callback as YamlCallback;
+use UnexpectedValueException;
 
 class DefinedRules implements Countable
 {
@@ -17,29 +47,40 @@ class DefinedRules implements Countable
      */
     public const SNDSGD_SCHEMA_RULES = [
         // types
-        \sndsgd\schema\rules\ArrayRule::class,
-        \sndsgd\schema\rules\BooleanRule::class,
-        \sndsgd\schema\rules\FloatRule::class,
-        \sndsgd\schema\rules\IntegerRule::class,
-        \sndsgd\schema\rules\ObjectRule::class,
-        \sndsgd\schema\rules\StringRule::class,
-        \sndsgd\schema\rules\OneOfRule::class,
-        \sndsgd\schema\rules\AnyTypeRule::class,
+        ArrayRule::class,
+        BooleanRule::class,
+        FloatRule::class,
+        IntegerRule::class,
+        ObjectRule::class,
+        StringRule::class,
+        OneOfRule::class,
+        AnyTypeRule::class,
         // misc
-        \sndsgd\schema\rules\DateTimeRule::class,
-        \sndsgd\schema\rules\EmailRule::class,
-        \sndsgd\schema\rules\EqualRule::class,
-        \sndsgd\schema\rules\HostnameRule::class,
-        \sndsgd\schema\rules\MaxLengthRule::class,
-        \sndsgd\schema\rules\MaxValueRule::class,
-        \sndsgd\schema\rules\MinLengthRule::class,
-        \sndsgd\schema\rules\MinValueRule::class,
-        \sndsgd\schema\rules\OptionRule::class,
-        \sndsgd\schema\rules\ReadableFileRule::class,
-        \sndsgd\schema\rules\RegexRule::class,
-        \sndsgd\schema\rules\UniqueRule::class,
-        \sndsgd\schema\rules\WritableFileRule::class,
+        DateTimeRule::class,
+        DefinedTypeRule::class,
+        EmailRule::class,
+        EqualRule::class,
+        HostnameRule::class,
+        MaxDecimalsRule::class,
+        MaxLengthRule::class,
+        MaxValueRule::class,
+        MinLengthRule::class,
+        MinValueRule::class,
+        OptionRule::class,
+        ReadableFileRule::class,
+        RegexRule::class,
+        UniqueRule::class,
+        WritableFileRule::class,
     ];
+
+    private static $instance;
+    public static function getInstance(): self
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = self::create();
+        }
+        return self::$instance;
+    }
 
     public static function create(): DefinedRules
     {
@@ -55,13 +96,11 @@ class DefinedRules implements Countable
      *
      * @var array<string,string>
      */
-    private $rules = [];
+    private array $rules = [];
 
-    /**
-     * Require the use of ::create() to create instances of this object
-     */
     private function __construct()
     {
+        // Require the use of ::create() to create instances of this object
     }
 
     public function count(): int
@@ -72,30 +111,41 @@ class DefinedRules implements Countable
     public function addRule(string $class): void
     {
         if (!class_exists($class)) {
-            throw new \UnexpectedValueException(
+            throw new UnexpectedValueException(
                 "failed to add rule; class '$class' does not exist",
             );
         }
 
-        $interface = Rule::class;
-        if (!in_array($interface, class_implements($class), true)) {
-            throw new \UnexpectedValueException(
-                "failed to add rule; class '$class' does not implement '$interface'",
+        if (!in_array(Rule::class, class_implements($class), true)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    "failed to add rule; class '%s' does not implement '%s'",
+                    $class,
+                    Rule::class,
+                ),
             );
         }
 
-        $name = $class::getName();
+        $rc = new ReflectionClass($class);
+        if ($rc->implementsInterface(NamedRule::class)) {
+            $name = $class::getName();
+            if (!preg_match(self::RULE_NAME_REGEX, $name)) {
+                throw new UnexpectedValueException(
+                    "invalid rule name '$name'",
+                );
+            }
+        } else {
+            $name = str_replace("\\", ".", $class);
+        }
 
         // only allow a name to be used once
         if (isset($this->rules[$name])) {
-            throw new \sndsgd\schema\exceptions\DuplicateRuleException(
-                "the rule '$name' is already defined by '{$this->rules[$name]}'",
-            );
-        }
-
-        if (!preg_match(self::RULE_NAME_REGEX, $name)) {
-            throw new \UnexpectedValueException(
-                "invalid rule name '$name'",
+            throw new DuplicateRuleException(
+                sprintf(
+                    "the rule '%s' is already defined by '%s'",
+                    $name,
+                    $this->rules[$name],
+                ),
             );
         }
 
@@ -104,12 +154,11 @@ class DefinedRules implements Countable
 
     public function instantiateRule(
         string $name,
-        array $args
-    ): \sndsgd\schema\Rule
-    {
+        array $args,
+    ): Rule {
         $class = $this->rules[$name] ?? "";
         if ($class === "") {
-            throw new \sndsgd\schema\exceptions\UndefinedRuleException(
+            throw new UndefinedRuleException(
                 "rule for '$name' not defined",
             );
         }
@@ -144,19 +193,21 @@ class DefinedRules implements Countable
                 ],
             ];
             $requiredProperties = ["rule"];
+            $defaults = [];
 
             foreach ($constructor->getParameters() as $parameter) {
                 $name = $parameter->getName();
                 $type = $parameter->getType();
-                if ($type) {
-                    $type = ReflectionUtil::normalizeType(strval($type->getName()));
+                if ($type instanceof ReflectionNamedType) {
+                    $type = $type->getName();
+                    $type = ReflectionUtil::normalizeType(strval($type));
                 } else {
                     $type = "any";
                 }
 
                 $property = ["type" => $type];
                 if ($parameter->isOptional()) {
-                    $property["default"] = $parameter->getDefaultValue();
+                    $defaults[$name] = $parameter->getDefaultValue();
                 } else {
                     $requiredProperties[] = $name;
                 }
@@ -164,12 +215,15 @@ class DefinedRules implements Countable
                 $properties[$name] = $property;
             }
 
-            $ret[] = [
+            $ret[] = array_filter([
                 "name" => $class,
                 "type" => "object",
                 "properties" => $properties,
                 "required" => $requiredProperties,
-            ];
+                "defaults" => $defaults,
+            ], static function($value) {
+                return $value !== [];
+            });
         }
 
         return $ret;

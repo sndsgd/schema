@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace sndsgd\schema\helpers;
+namespace sndsgd\schema;
 
 use Exception;
 use sndsgd\Arr;
+use sndsgd\Classname;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\InvalidTypeDefinitionException;
@@ -17,6 +18,9 @@ use sndsgd\schema\types\ObjectType;
 use sndsgd\schema\types\OneOfObjectType;
 use sndsgd\schema\types\OneOfType;
 use sndsgd\schema\types\ScalarType;
+use sndsgd\schema\YamlDoc;
+use Throwable;
+use TypeError;
 
 class TypeHelper
 {
@@ -50,6 +54,11 @@ class TypeHelper
         "oneofobject" => OneOfObjectType::BASE_CLASSNAME,
     ];
 
+    public static function normalizeClassName(string $typeName): string
+    {
+        return "\\" . implode("\\", Classname::split($typeName));
+    }
+
     public static function resolveFullTypeName(string $typeName): string
     {
         return self::TYPE_CLASSNAME_MAP[$typeName] ?? $typeName;
@@ -61,16 +70,10 @@ class TypeHelper
         return $map[$typeName] ?? $typeName;
     }
 
-    private $definedTypes;
-    private $definedRules;
-
     public function __construct(
-        DefinedTypes $definedTypes,
-        DefinedRules $definedRules
-    ) {
-        $this->definedTypes = $definedTypes;
-        $this->definedRules = $definedRules;
-    }
+        private DefinedTypes $definedTypes,
+        private DefinedRules $definedRules,
+    ) {}
 
     public function getDefinedTypes(): DefinedTypes
     {
@@ -89,34 +92,26 @@ class TypeHelper
         return $typeName;
     }
 
-    // it is expected that the caller has context as to what the file,
-    // doc index, and complete doc contain. so it can catch the exception
-    // and report more detail.
-    public function getDependenciesFromDoc(array $doc): array
+    public function getDependenciesForDoc(YamlDoc $doc): array
     {
-        $docType = $doc["type"] ?? "";
-        if ($docType === "") {
-            throw new InvalidTypeDefinitionException("missing required property 'type'");
-        }
-
-        if (!is_string($docType)) {
-            throw new InvalidTypeDefinitionException("invalid type for property 'type'; expecting a string");
-        }
-
-        $baseTypeName = $this->getBaseTypeName($doc["type"]);
+        $baseTypeName = $this->getBaseTypeName($doc->getType());
         $baseClass = self::TYPE_TO_CLASSNAME[$baseTypeName] ?? "";
         if ($baseClass === "") {
-            throw new InvalidTypeDefinitionException(
-                "failed to resolve base type for '$docType'",
-            );
+            return [$doc->getType()];
         }
 
-        return $baseClass::getDependencies($doc);
+        return $baseClass::getDependencies($doc->doc);
     }
 
     public static function normalizeStringToTypeArray($value): array
     {
-        return is_string($value) ? ["type" => $value] : $value;
+        if (is_string($value)) {
+            $value = ["type" => $value];
+        }
+
+        $value["type"] = self::$aliases[$value["type"]] ?? $value["type"];
+
+        return $value;
     }
 
     public function rawDocToType(array $doc): Type
@@ -148,7 +143,7 @@ class TypeHelper
             $doc["rules"] ?? [],
         );
 
-        switch (get_class($parentType)) {
+        switch ($parentType::class) {
             case ArrayType::class:
                 if (!isset($doc["value"])) {
                     throw new InvalidTypeDefinitionException("missing required key `value`");
@@ -175,15 +170,22 @@ class TypeHelper
                         $doc["properties"] ?? [],
                     ),
                     array_values($doc["required"] ?? $parentType->getRequiredProperties()),
-                    $doc["defaults"] ?? $parentType->getDefaults()
+                    array_merge($parentType->getDefaults(), $doc["defaults"] ?? []),
                 );
             case MapType::class:
-
-                $keyType = $this->createSubType($name, self::normalizeStringToTypeArray($doc["key"]), "MapKey");
-                $valueType = $this->createSubType($name, self::normalizeStringToTypeArray($doc["value"]), "MapValue");
+                $keyType = $this->createSubType(
+                    $name,
+                    self::normalizeStringToTypeArray($doc["key"]),
+                    "MapKey",
+                );
+                $valueType = $this->createSubType(
+                    $name,
+                    self::normalizeStringToTypeArray($doc["value"]),
+                    "MapValue",
+                );
 
                 if (!($keyType instanceof ScalarType)) {
-                    throw new \Exception("'type' must be scalar");
+                    throw new Exception("'type' must be scalar");
                 }
 
                 return new MapType(
@@ -197,6 +199,7 @@ class TypeHelper
                 return new OneOfType(
                     $name,
                     $description,
+                    $doc["errorMessage"] ?? "",
                     ...$this->createOneOfTypes($name, $doc["types"]),
                 );
             case OneOfObjectType::class:
@@ -214,32 +217,32 @@ class TypeHelper
                     $description,
                     $rules,
                     $this->getBaseTypeName($doc["type"]),
-                    $doc["default"] ?? null,
                 );
         }
 
-        throw new \Exception("unknown type " . get_class($parentType));
+        throw new Exception("unknown type " . $parentType::class);
     }
 
     public function createTypeFromDoc(array $doc): Type
     {
-        $doc = self::rewriteRawDoc($doc);
-
         try {
             return $this->rawDocToType($doc);
-        } catch (\Throwable | \TypeError $ex) {
+        } catch (Throwable | TypeError $ex) {
             $message = sprintf(
                 "failed to create type from raw doc; %s:\n%s",
                 $ex->getMessage(),
                 yaml_emit($doc),
             );
 
-            throw new \Exception($message, $ex->getCode(), $ex);
+            throw new Exception($message, $ex->getCode(), $ex);
         }
     }
 
-    private function createProperties(string $objectClassname, array $properties, array $docs)
-    {
+    private function createProperties(
+        string $objectClassname,
+        array $properties,
+        array $docs,
+    ): PropertyList {
         foreach ($docs as $propertyName => $doc) {
             if (is_string($doc)) {
                 $doc = ["type" => $doc];
@@ -265,8 +268,8 @@ class TypeHelper
 
             try {
                 $property = new Property($propertyName, $propertyType);
-            } catch (\Throwable | \TypeError $ex) {
-                throw new \Exception("failed to create property", 0, $ex);
+            } catch (Throwable | TypeError $ex) {
+                throw new Exception("failed to create property", 0, $ex);
             }
 
             $properties[] = $property;
@@ -278,7 +281,7 @@ class TypeHelper
     private function createSubType(
         string $parentClassname,
         array $doc,
-        string $classSuffix
+        string $classSuffix,
     ): Type {
         // if only a type is listed, we can just use that type.
         if (
@@ -314,7 +317,7 @@ class TypeHelper
     private static function mergeRules(
         DefinedRules $definedRules,
         RuleList $existingRules,
-        array $docRules
+        array $docRules,
     ): RuleList {
         $rules = $existingRules->toArray();
 
@@ -329,34 +332,5 @@ class TypeHelper
         }
 
         return new RuleList(...$rules);
-    }
-
-    /**
-     * Hack to make objects with `oneof`
-     *
-     * @param array $doc [description]
-     * @return array
-     */
-    public static function rewriteRawDoc(array $doc): array
-    {
-        $type = $doc["type"] ?? "";
-        if (
-            $type !== "object"
-            || isset($doc["properties"])
-            || !isset($doc["oneof"])
-        ) {
-            return $doc;
-        }
-
-        // rewrite the thing to a oneofobject
-        $doc["type"] = "oneofobject";
-        foreach (["key", "types"] as $oneOfKey) {
-            $doc[$oneOfKey] = $doc["oneof"][$oneOfKey];
-        }
-        unset($doc["oneof"]);
-
-        echo yaml_emit($doc);
-
-        return $doc;
     }
 }

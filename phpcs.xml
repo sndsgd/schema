@@ -6,9 +6,11 @@
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
     <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
+    <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement"/>
     <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
+
     <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility"/>
-    <!-- <rule ref="SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants"/> -->
+    <rule ref="SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants"/>
     <rule ref="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces">
         <properties>
             <property name="linesCountAfterOpeningBrace" value="0"/>
@@ -24,6 +26,7 @@
     <rule ref="SlevomatCodingStandard.Classes.TraitUseSpacing"/>
     <!-- <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements"/> -->
     <rule ref="SlevomatCodingStandard.Classes.UselessLateStaticBinding"/>
+
     <rule ref="SlevomatCodingStandard.Commenting.DisallowOneLinePropertyDocComment"/>
     <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing">
         <properties>
@@ -35,18 +38,16 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
-    <!-- <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations"/> -->
     <rule ref="SlevomatCodingStandard.Commenting.ForbiddenComments"/>
     <rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration"/>
-    <!-- <rule ref="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/> -->
     <rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
+
     <rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.ControlStructureSpacing"/> -->
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch"/>
-    <!-- <rule ref="SlevomatCodingStandard.ControlStructures.DisallowEmpty"/> -->
+    <rule ref="SlevomatCodingStandard.ControlStructures.DisallowEmpty"/>
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.DisallowShortTernaryOperator"/> -->
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
-    <!-- <rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit"/> -->
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.LanguageConstructWithParentheses"/> -->
     <rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
     <!-- <rule ref="SlevomatCodingStandard.ControlStructures.NewWithoutParentheses"/> -->
@@ -60,29 +61,24 @@
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
     <rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
     <!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
+
+    <rule ref="SlevomatCodingStandard.Functions.ArrowFunctionDeclaration"/>
+    <rule ref="SlevomatCodingStandard.Functions.DisallowArrowFunction"/>
+    <rule ref="SlevomatCodingStandard.Functions.DisallowEmptyFunction"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInClosureUse"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
     <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
-    <rule ref="SlevomatCodingStandard.Functions.TrailingCommaInCall"/>
-    <!-- <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/> -->
+    <rule ref="SlevomatCodingStandard.Functions.StrictCall"/>
+    <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
+
+
     <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse"/>
-<!--     <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameAfterKeyword">
-        <properties>
-            <property name="keywordsToCheck" type="array">
-                <element value="T_EXTENDS"/>
-                <element value="T_IMPLEMENTS"/>
-            </property>
-        </properties>
-    </rule> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalConstants"/> -->
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/> -->
     <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine"/>
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceDeclaration"/>
     <rule ref="SlevomatCodingStandard.Namespaces.NamespaceSpacing"/>
-    <!-- <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/> -->
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/>
     <rule ref="SlevomatCodingStandard.Namespaces.RequireOneNamespaceInFile"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
         <properties>
@@ -106,7 +102,7 @@
     <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
         <properties>
-            <property name="newlinesCountBetweenOpenTagAndDeclare" value="0"/>
+            <property name="declareOnFirstLine" value="1"/>
             <property name="newlinesCountAfterDeclare" value="2"/>
             <property name="spacesCountAroundEqualsSign" value="0"/>
         </properties>
@@ -122,4 +118,11 @@
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
+    <rule ref="SlevomatCodingStandard.Classes.TraitUseSpacing">
+        <properties>
+            <property name="linesCountBeforeFirstUse" value="0"/>
+            <property name="linesCountBeforeFirstUseWhenFirstInClass" value="0"/>
+            <property name="linesCountAfterLastUse" value="1"/>
+        </properties>
+    </rule>
 </ruleset>

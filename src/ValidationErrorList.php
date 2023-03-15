@@ -29,8 +29,6 @@ class ValidationErrorList implements Countable
     public function addError(string $path, string $message)
     {
         if (isset($this->errors[$path])) {
-            var_dump($this->errors[$path]);
-            var_dump("$path -- $message");
             throw new LogicException("error already defined for '$path'");
         }
         $this->errors[$path] = $message;

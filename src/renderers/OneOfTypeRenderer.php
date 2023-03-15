@@ -3,6 +3,7 @@
 namespace sndsgd\schema\renderers;
 
 use sndsgd\Classname;
+use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\types\ObjectType;
 use sndsgd\schema\types\OneOfType;
 use sndsgd\schema\types\ScalarType;
@@ -18,20 +19,7 @@ class OneOfTypeRenderer
 
     public function render(): string
     {
-        $classname = RenderHelper::createClassnameFromString($this->type->getName());
-        $namespace = $classname->getNamespace();
-        $classname = $classname->getClass();
-
-        $ret = "";
-        $ret .= "<?php declare(strict_types=1);\n";
-        $ret .= "\n";
-        if ($namespace) {
-            $ret .= "namespace $namespace;\n";
-            $ret .= "\n";
-        }
-        $ret .= RenderHelper::getClassComment($this->type);
-        $ret .= "final class $classname implements \JsonSerializable\n";
-        $ret .= "{\n";
+        $ret = RenderHelper::getClassHeader($this->type);
         $ret .= "    private \$value;\n";
         $ret .= "\n";
         $ret .= $this->renderConstructor();
@@ -49,7 +37,7 @@ class OneOfTypeRenderer
         // this should really just be true because oneof is always complex
         $isComplex = false;
 
-        $validTypeSignatures = [];
+        $validTypeClasses = [];
 
         // attempt to validate all the different types
         $tmp = "";
@@ -59,7 +47,12 @@ class OneOfTypeRenderer
         foreach ($this->type->getTypes() as $type) {
             $tmp .= $tmp === "" ? "" : "\n";
 
-            $validTypeSignatures[] = $type->getSignature();
+            if (DefinedTypes::isBaseType($type->getName())) {
+                $validTypeClasses[] = $type->getSignature();
+            } else {
+                $validTypeClasses[] = $type->getName();
+            }
+
             $typeClass = "\\" . Classname::toString($type->getName());
 
             $tmp .= "        try {\n";
@@ -78,7 +71,7 @@ class OneOfTypeRenderer
             $tmp .= "            }\n";
             $tmp .= "        } catch (\\sndsgd\\schema\\ValidationFailure \$ex) {\n";
 
-            // if the type is scalar we can bail here because the provide value
+            // if the type is scalar we can bail here because the provided value
             // had the valid type, but something else must have failed
             if ($type instanceof ScalarType) {
                 $tmp .= "            throw \$ex;\n";
@@ -105,15 +98,15 @@ class OneOfTypeRenderer
         $ret .= $tmp;
 
         if ($isComplex) {
-            // TODO do something with all the damn errors
+            // $ret .= "        print_r(\$errors);\n";
         }
 
-        $validTypeSignatures = implode(", ", $validTypeSignatures);
+        $validTypeClasses = implode(", ", $validTypeClasses);
 
         $ret .= "\n";
         $ret .= "        throw new \\sndsgd\\schema\\exceptions\\RuleValidationException(\n";
         $ret .= "            \$path,\n";
-        $ret .= "            \"must be one of the following types: $validTypeSignatures\"\n";
+        $ret .= "            \"must be one of [$validTypeClasses]\"\n";
         $ret .= "        );\n";
         $ret .= "    }\n";
 

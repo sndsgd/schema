@@ -2,10 +2,12 @@
 
 namespace sndsgd\schema\types;
 
+use Exception;
 use LogicException;
 use sndsgd\schema\PropertyList;
 use sndsgd\schema\RuleList;
 use sndsgd\schema\Type;
+use Throwable;
 
 class ObjectType extends BaseType
 {
@@ -36,7 +38,7 @@ class ObjectType extends BaseType
         RuleList $rules,
         PropertyList $properties,
         array $requiredProperties,
-        array $defaults
+        array $defaults,
     ) {
         // only allow the base object to be created without any properties
         if ($name !== self::BASE_CLASSNAME && count($properties) === 0) {
@@ -53,26 +55,29 @@ class ObjectType extends BaseType
 
     private function setRequiredProperties(string ...$names): void
     {
-        $this->requiredProperties = array_flip($names);
+        $this->requiredProperties = [];
+        foreach ($names as $name) {
+            if (!$this->properties->has($name)) {
+                throw new LogicException(
+                    "undefined property '$name' cannot be required",
+                );
+            }
+            $this->requiredProperties[$name] = $name;
+        }
     }
 
     private function isDefaultPossibleForType(
         Type $type,
-        $default
-    ): bool
-    {
+        $default,
+    ): bool {
         if ($type instanceof ScalarType) {
             return true;
         }
 
-        if (
+        return (
             $type instanceof ArrayType
             && $default === []
-        ) {
-            return true;
-        }
-
-        return false;
+        );
     }
 
     private function setDefaults(array $defaults): void
@@ -81,8 +86,8 @@ class ObjectType extends BaseType
 
         foreach ($defaults as $key => $value) {
             if (!$properties->has($key)) {
-                throw new \Exception(
-                    "cannot set default value for undefined property '$key'"
+                throw new Exception(
+                    "cannot set default value for undefined property '$key'",
                 );
             }
 
@@ -90,23 +95,23 @@ class ObjectType extends BaseType
             // default values
             $type = $properties->get($key)->getType();
             if (!$this->isDefaultPossibleForType($type, $value)) {
-                throw new \Exception(
+                throw new Exception(
                     "cannot set default value for '$key'; " .
-                    "only scalar and empty arrays are acceptable defaults"
+                    "only scalar and empty arrays are acceptable defaults",
                 );
             }
 
             foreach ($type->getRules() as $rule) {
                 try {
                     $rule->validate($value);
-                } catch (\Exception $ex) {
+                } catch (Throwable $ex) {
                     $message = sprintf(
                         "failed to set default value for '%s'; %s",
                         $key,
                         $ex->getMessage(),
                     );
 
-                    throw new \Exception($message);
+                    throw new Exception($message);
                 }
             }
 
@@ -125,7 +130,7 @@ class ObjectType extends BaseType
         return $this->getName() === self::BASE_CLASSNAME ? "" : self::BASE_CLASSNAME;
     }
 
-    public function getProperties(): \sndsgd\schema\PropertyList
+    public function getProperties(): PropertyList
     {
         return $this->properties;
     }

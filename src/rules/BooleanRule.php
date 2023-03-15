@@ -2,7 +2,12 @@
 
 namespace sndsgd\schema\rules;
 
-final class BooleanRule implements \sndsgd\schema\Rule
+use sndsgd\schema\exceptions\TypeValidationException;
+use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
+use sndsgd\Str;
+
+final class BooleanRule implements Rule, NamedRule
 {
     public static function getName(): string
     {
@@ -19,7 +24,7 @@ final class BooleanRule implements \sndsgd\schema\Rule
 
     public function __construct(
         string $summary = "type:boolean",
-        string $description = "must be a boolean"
+        string $description = "must be a boolean",
     ) {
         $this->summary = $summary;
         $this->description = $description;
@@ -48,13 +53,13 @@ final class BooleanRule implements \sndsgd\schema\Rule
                 return true;
             }
         } elseif (is_string($value)) {
-            $value = \sndsgd\Str::toBoolean($value);
+            $value = Str::toBoolean($value);
             if ($value !== null) {
                 return $value;
             }
         }
 
-        throw new \sndsgd\schema\exceptions\TypeValidationException(
+        throw new TypeValidationException(
             $path,
             $this->getDescription(),
         );

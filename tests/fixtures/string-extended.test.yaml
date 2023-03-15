@@ -1,9 +1,11 @@
 ---
+kind: type
 name: fixtures.extendedStringTest.BaseString
 type: string
 rules:
 - !rule/minLength 5
 ---
+kind: type
 name: fixtures.extendedStringTest.fixtureSubString
 type: fixtures.extendedStringTest.BaseString
 rules:

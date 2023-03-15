@@ -5,6 +5,7 @@ namespace sndsgd\schema\exceptions;
 use Exception;
 use sndsgd\schema\ValidationErrorList;
 use sndsgd\schema\ValidationFailure;
+use Throwable;
 
 class ValidationException extends Exception implements ValidationFailure
 {
@@ -14,7 +15,7 @@ class ValidationException extends Exception implements ValidationFailure
         ValidationErrorList $errors,
         string $message = "validation failed",
         int $code = 0,
-        ?\Throwable $previous = null
+        ?Throwable $previous = null,
     )
     {
         $this->errors = $errors;
