@@ -4,8 +4,8 @@ namespace sndsgd\schema\rules;
 
 use sndsgd\schema\exceptions\RuleValidationException;
 use sndsgd\schema\exceptions\TypeValidationFailure;
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 use sndsgd\schema\ValidationErrorList;
 use sndsgd\schema\ValidationFailure;
 

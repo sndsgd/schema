@@ -53,7 +53,9 @@ class MaxDecimalsRuleTest extends TestCase
     public function provideConstructorMaxDecimalsInvalid(): iterable
     {
         yield [-1];
+        yield [0];
         yield [25];
+        yield [26];
     }
 
     public function testGetSummary(): void

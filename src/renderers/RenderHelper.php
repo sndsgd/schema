@@ -5,7 +5,6 @@ namespace sndsgd\schema\renderers;
 use ReflectionClass;
 use sndsgd\Classname;
 use sndsgd\schema\Rule;
-use sndsgd\schema\NamedRule;
 use sndsgd\schema\Type;
 use sndsgd\schema\types\AnyType;
 use sndsgd\schema\types\OneOfObjectType;

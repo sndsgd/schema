@@ -3,8 +3,8 @@
 namespace sndsgd\schema\rules;
 
 use sndsgd\schema\exceptions\RuleValidationException;
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 

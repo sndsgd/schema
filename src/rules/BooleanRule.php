@@ -3,8 +3,8 @@
 namespace sndsgd\schema\rules;
 
 use sndsgd\schema\exceptions\TypeValidationException;
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 use sndsgd\Str;
 
 final class BooleanRule implements Rule, NamedRule

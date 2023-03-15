@@ -3,8 +3,8 @@
 namespace sndsgd\schema\rules;
 
 use sndsgd\schema\exceptions\TypeValidationException;
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 
 class ObjectRule implements Rule, NamedRule
 {

@@ -3,12 +3,13 @@
 namespace sndsgd\schema;
 
 use Countable;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use sndsgd\schema\exceptions\DuplicateRuleException;
 use sndsgd\schema\exceptions\UndefinedRuleException;
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 use sndsgd\schema\rules\AnyTypeRule;
 use sndsgd\schema\rules\ArrayRule;
 use sndsgd\schema\rules\BooleanRule;
@@ -19,6 +20,7 @@ use sndsgd\schema\rules\EqualRule;
 use sndsgd\schema\rules\FloatRule;
 use sndsgd\schema\rules\HostnameRule;
 use sndsgd\schema\rules\IntegerRule;
+use sndsgd\schema\rules\MaxDecimalsRule;
 use sndsgd\schema\rules\MaxLengthRule;
 use sndsgd\schema\rules\MaxValueRule;
 use sndsgd\schema\rules\MinLengthRule;
@@ -59,7 +61,7 @@ class DefinedRules implements Countable
         EmailRule::class,
         EqualRule::class,
         HostnameRule::class,
-        \sndsgd\schema\rules\MaxDecimalsRule::class,
+        MaxDecimalsRule::class,
         MaxLengthRule::class,
         MaxValueRule::class,
         MinLengthRule::class,
@@ -124,7 +126,7 @@ class DefinedRules implements Countable
             );
         }
 
-        $rc = new \ReflectionClass($class);
+        $rc = new ReflectionClass($class);
         if ($rc->implementsInterface(NamedRule::class)) {
             $name = $class::getName();
             if (!preg_match(self::RULE_NAME_REGEX, $name)) {

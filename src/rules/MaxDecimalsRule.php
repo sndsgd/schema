@@ -4,8 +4,8 @@ namespace sndsgd\schema\rules;
 
 use InvalidArgumentException;
 use sndsgd\schema\exceptions\RuleValidationException;
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 use sndsgd\yaml\Callback as YamlCallback;
 use UnexpectedValueException;
 
@@ -56,16 +56,15 @@ final class MaxDecimalsRule implements Rule, NamedRule, YamlCallback
 
     private static function isValidValue($value): bool
     {
-        if (
-            !is_int($value)
-            && intval($value) != $value
-        ) {
+        if (is_string($value)) {
+            if (!ctype_digit($value)) {
+                return false;
+            }
+        } elseif (!is_int($value)) {
             return false;
         }
 
         $value = intval($value);
-
-        // note: 24 is an arbitrary number that seems large enough :P
         return ($value > 0 && $value <= self::ARBITRARY_MAX);
     }
 

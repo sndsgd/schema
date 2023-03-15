@@ -2,8 +2,8 @@
 
 namespace sndsgd\schema\rules;
 
-use sndsgd\schema\Rule;
 use sndsgd\schema\NamedRule;
+use sndsgd\schema\Rule;
 
 final class AnyTypeRule implements Rule, NamedRule
 {
