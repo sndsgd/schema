@@ -167,6 +167,11 @@ class DefinedTypes implements Countable
         return count($this->types);
     }
 
+    public function getTypes(): array
+    {
+        return $this->types;
+    }
+
     public function addType(Type $type): void
     {
         $name = $type->getName();
@@ -204,43 +209,21 @@ class DefinedTypes implements Countable
         ksort($this->types);
 
         foreach ($this->types as $type) {
-            if ($type instanceof ObjectType) {
-                $renderer = new ObjectTypeRenderer($type);
-            } elseif ($type instanceof ScalarType) {
-                $renderer = new ScalarTypeRenderer($type);
-            } elseif ($type instanceof ArrayType) {
-                $renderer = new ArrayTypeRenderer($type);
-            } elseif ($type instanceof MapType) {
-                $renderer = new MapTypeRenderer($type);
-            } elseif ($type instanceof OneOfType) {
-                if ($type->getName() === OneOfType::BASE_CLASSNAME) {
-                    continue;
-                }
-                $renderer = new OneOfTypeRenderer($type);
-            } elseif ($type instanceof OneOfObjectType) {
-                if ($type->getName() === OneOfObjectType::BASE_CLASSNAME) {
-                    continue;
-                }
-                $renderer = new OneOfObjectTypeRenderer($type);
-            } elseif ($type instanceof AnyType) {
-                $renderer = new AnyTypeRenderer($type);
-            } else {
-                throw new Exception("failed to process type instance\n" . print_r($type, true));
-            }
-
             $output && $output->writeln(
                 sprintf("rendering '%s'... ", $type->getName()),
                 OutputInterface::VERBOSITY_DEBUG,
             );
 
-            $php = $renderer->render();
+            $php = RenderHelper::renderType($type);
+            if ($php === "") {
+                continue;
+            }
             $path = RenderHelper::getTypePsr4Path($basedir, $type);
             $dir = dirname($path);
             if (!file_exists($dir) && !mkdir($dir, 0777, true)) {
                 die("failed to create dir\n");
             }
 
-            // echo "$path\n";
             file_put_contents($path, $php);
         }
     }
