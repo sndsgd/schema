@@ -20,6 +20,7 @@ class RenderHelper
         $namespace = $classname->getNamespace();
         $classname = $classname->getClass();
 
+        $implements[] = "\\sndsgd\\schema\\GeneratedType";
         $implements = implode(", ", $implements);
 
         $ret = "";
@@ -58,6 +59,9 @@ class RenderHelper
         $serialized = var_export(serialize($type), true);
 
         $ret = "";
+        $ret .= "    /**\n";
+        $ret .= "     * @return \\$class\n";
+        $ret .= "     */\n";
         $ret .= "    public static function fetchType(): \\$class\n";
         $ret .= "    {\n";
         $ret .= "        return unserialize($serialized);\n";
