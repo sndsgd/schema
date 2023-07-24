@@ -4,6 +4,10 @@ namespace sndsgd\schema;
 
 use sndsgd\schema\types\BaseType;
 
+/**
+ * An interace for all generated types to implement. This will be useful
+ * when attempting to programatically determine if a class is generated.
+ */
 interface GeneratedType
 {
     /**
