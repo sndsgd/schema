@@ -2,16 +2,50 @@
 
 namespace sndsgd\schema\renderers;
 
+use Exception;
 use ReflectionClass;
 use sndsgd\Classname;
 use sndsgd\schema\Rule;
 use sndsgd\schema\Type;
 use sndsgd\schema\types\AnyType;
+use sndsgd\schema\types\ArrayType;
+use sndsgd\schema\types\MapType;
+use sndsgd\schema\types\ObjectType;
 use sndsgd\schema\types\OneOfObjectType;
+use sndsgd\schema\types\OneOfType;
 use sndsgd\schema\types\ScalarType;
 
 class RenderHelper
 {
+    public static function renderType(Type $type): string
+    {
+        if ($type instanceof ObjectType) {
+            $renderer = new ObjectTypeRenderer($type);
+        } elseif ($type instanceof ScalarType) {
+            $renderer = new ScalarTypeRenderer($type);
+        } elseif ($type instanceof ArrayType) {
+            $renderer = new ArrayTypeRenderer($type);
+        } elseif ($type instanceof MapType) {
+            $renderer = new MapTypeRenderer($type);
+        } elseif ($type instanceof OneOfType) {
+            if ($type->getName() === OneOfType::BASE_CLASSNAME) {
+                return "";
+            }
+            $renderer = new OneOfTypeRenderer($type);
+        } elseif ($type instanceof OneOfObjectType) {
+            if ($type->getName() === OneOfObjectType::BASE_CLASSNAME) {
+                return "";
+            }
+            $renderer = new OneOfObjectTypeRenderer($type);
+        } elseif ($type instanceof AnyType) {
+            $renderer = new AnyTypeRenderer($type);
+        } else {
+            throw new Exception("failed to process type instance\n" . print_r($type, true));
+        }
+
+        return $renderer->render();
+    }
+
     public static function getClassHeader(
         Type $type,
         array $implements = ["\\JsonSerializable"],
