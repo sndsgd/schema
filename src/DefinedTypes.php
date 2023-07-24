@@ -3,17 +3,9 @@
 namespace sndsgd\schema;
 
 use Countable;
-use Exception;
 use sndsgd\schema\exceptions\DuplicateTypeException;
 use sndsgd\schema\exceptions\UndefinedTypeException;
-use sndsgd\schema\renderers\AnyTypeRenderer;
-use sndsgd\schema\renderers\ArrayTypeRenderer;
-use sndsgd\schema\renderers\MapTypeRenderer;
-use sndsgd\schema\renderers\ObjectTypeRenderer;
-use sndsgd\schema\renderers\OneOfObjectTypeRenderer;
-use sndsgd\schema\renderers\OneOfTypeRenderer;
 use sndsgd\schema\renderers\RenderHelper;
-use sndsgd\schema\renderers\ScalarTypeRenderer;
 use sndsgd\schema\RuleList;
 use sndsgd\schema\rules\AnyTypeRule;
 use sndsgd\schema\rules\ArrayRule;
