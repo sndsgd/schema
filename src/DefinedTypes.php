@@ -220,17 +220,17 @@ class DefinedTypes implements Countable
                     continue;
                 }
             }
-            $path = $codePathResolver->getPath($classname);
-
-            $output && $output->writeln(
-                sprintf("rendering '%s'... ", $type->getName()),
-                OutputInterface::VERBOSITY_DEBUG,
-            );
 
             $php = RenderHelper::renderType($type);
             if ($php === "") {
                 continue;
             }
+
+            $path = $codePathResolver->getPath($classname);
+            $output && $output->writeln(
+                sprintf("rendering '%s'... ", $type->getName()),
+                OutputInterface::VERBOSITY_DEBUG,
+            );
 
             $dir = dirname($path);
             if (!file_exists($dir) && !mkdir($dir, 0777, true)) {
