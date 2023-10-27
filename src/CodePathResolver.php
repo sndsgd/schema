@@ -21,7 +21,7 @@ class CodePathResolver
             $fallbackDir !== ""
             && (
                 !str_starts_with($fallbackDir, $baseDir)
-                || substr_count($baseDir, "/") == substr_count($fallbackDir,"/")
+                || substr_count($baseDir, "/") === substr_count($fallbackDir,"/")
             )
         ) {
             throw new UnexpectedValueException(
@@ -62,7 +62,7 @@ class CodePathResolver
                 $map[$namespace] = $paths;
             } else {
                 $map[$namespace] = array_unique(
-                    array_merge((array) $map[$namespace], (array) $paths)
+                    array_merge((array) $map[$namespace], (array) $paths),
                 );
             }
         }
@@ -73,7 +73,7 @@ class CodePathResolver
     public function __construct(
         private readonly string $baseDir,
         private readonly array $autoloadMap,
-        private readonly string $fallbackDir = ""
+        private readonly string $fallbackDir = "",
     ) {}
 
     public function getPath(string $class): string

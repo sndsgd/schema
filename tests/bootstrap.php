@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 use sndsgd\Classname;
+use sndsgd\schema\CodePathResolver;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\RuleLocator;
@@ -11,7 +12,6 @@ use sndsgd\yaml\callbacks\SecondsCallback;
 use sndsgd\yaml\Parser;
 use sndsgd\yaml\ParserContext;
 use Symfony\Component\Console\Output\BufferedOutput;
-use sndsgd\schema\CodePathResolver;
 
 const BUILD_DIR = __DIR__ . "/../build/tests";
 
@@ -36,7 +36,7 @@ function createTestTypes(string $yaml): string
     $schemaPath = $schemaDir . "/$hash.type.yaml";
 
     if (!file_exists($schemaDir) && !mkdir($schemaDir, 0777, true)) {
-        throw new \Exception("failed to create directory '$schemaDir'");
+        throw new Exception("failed to create directory '$schemaDir'");
     }
 
     file_put_contents($schemaPath, $yaml);
