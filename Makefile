@@ -17,12 +17,12 @@ endif
 PHP_VERSION ?= 8.2
 IMAGE_NAME ?= ghcr.io/sndsgd/php
 IMAGE ?= $(IMAGE_NAME):$(PHP_VERSION)
+VOLUME_DIR ?= $(shell dirname "$(CWD)")
 DOCKER_RUN ?= $(DOCKER_BIN) run \
 	$(DOCKER_DEFAULT_OPTIONS) \
 	$(DOCKER_RUN_USER) \
-	--volume $(CWD):$(CWD) \
-	--volume $(CWD)/../yaml:$(CWD)/../yaml \
-	--workdir $(CWD) \
+	--volume "$(VOLUME_DIR)":"$(VOLUME_DIR)" \
+	--workdir "$(CWD)" \
 	$(IMAGE)
 
 .PHONY: help
@@ -37,7 +37,7 @@ todo: ## Show `TODO` lines present in the repo
 
 .PHONY: prepare-build-directory
 prepare-build-directory:
-	@rm -rf $(CWD)/build && mkdir $(CWD)/build
+	@rm -rf "$(CWD)/build" && mkdir "$(CWD)/build"
 
 ###############################################################################
 # composer ####################################################################
@@ -134,11 +134,11 @@ test-coverage: phpunit
 
 .PHONY: generate
 generate: composer-install
-	@$(DOCKER_RUN) $(CWD)/schema generate \
+	@$(DOCKER_RUN) "$(CWD)/schema" generate \
 		--exclude-path=vendor \
 		--exclude-path=.git \
-		--app-path=$(CWD) \
-		src \
+		--app-path="$(CWD)" \
+		"$(CWD)/src" \
 		-vvv
 
 .PHONY: schema
