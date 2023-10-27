@@ -11,6 +11,7 @@ use sndsgd\yaml\callbacks\SecondsCallback;
 use sndsgd\yaml\Parser;
 use sndsgd\yaml\ParserContext;
 use Symfony\Component\Console\Output\BufferedOutput;
+use sndsgd\schema\CodePathResolver;
 
 const BUILD_DIR = __DIR__ . "/../build/tests";
 
@@ -34,7 +35,10 @@ function createTestTypes(string $yaml): string
     $schemaDir = BUILD_DIR . "/$hash";
     $schemaPath = $schemaDir . "/$hash.type.yaml";
 
-    mkdir($schemaDir);
+    if (!file_exists($schemaDir) && !mkdir($schemaDir, 0777, true)) {
+        throw new \Exception("failed to create directory '$schemaDir'");
+    }
+
     file_put_contents($schemaPath, $yaml);
 
     $searchPaths = [$schemaDir];
@@ -69,7 +73,8 @@ function createTestTypes(string $yaml): string
         $excludePaths,
     );
 
-    $definedTypes->renderClasses(BUILD_DIR);
+    $pathResolver = new CodePathResolver(dirname(BUILD_DIR), [], BUILD_DIR);
+    $definedTypes->renderClasses($pathResolver);
 
     unlink($schemaPath);
     rmdir($schemaDir);

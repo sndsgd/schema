@@ -137,9 +137,8 @@ generate: composer-install
 	@$(DOCKER_RUN) $(CWD)/schema generate \
 		--exclude-path=vendor \
 		--exclude-path=.git \
-		--render-path=build \
+		--app-path=$(CWD) \
 		src \
-		tests/fixtures \
 		-vvv
 
 .PHONY: schema

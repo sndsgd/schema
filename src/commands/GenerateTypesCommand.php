@@ -2,6 +2,7 @@
 
 namespace sndsgd\schema\commands;
 
+use sndsgd\schema\CodePathResolver;
 use sndsgd\schema\DefinedRules;
 use sndsgd\schema\DefinedTypes;
 use sndsgd\schema\exceptions\ErrorListException;
@@ -67,10 +68,10 @@ class GenerateTypesCommand extends Command
         );
 
         $this->addOption(
-            "render-path",
+            "app-path",
             "",
             InputOption::VALUE_REQUIRED,
-            "The path to render generated classes in",
+            "The path to your app directory (used for determining rendered code paths)",
         );
     }
 
@@ -89,8 +90,8 @@ class GenerateTypesCommand extends Command
             return 1;
         }
 
-        $renderPath = self::verifyRenderPath($input, $output);
-        if ($renderPath === "") {
+        $pathResolver = self::verifyAppPath($input, $output);
+        if (!$pathResolver) {
             return 1;
         }
 
@@ -102,7 +103,7 @@ class GenerateTypesCommand extends Command
             return 1;
         }
 
-        if (!$this->renderTypes($output, $renderPath)) {
+        if (!$this->renderTypes($output, $pathResolver)) {
             return 1;
         }
 
@@ -174,28 +175,25 @@ class GenerateTypesCommand extends Command
         return $errors === 0 ? $excludePaths : null;
     }
 
-    private static function verifyRenderPath(
+    private static function verifyAppPath(
         InputInterface $input,
         OutputInterface $output,
-    ): string {
-        $path = $input->getOption("render-path");
+    ): ?CodePathResolver {
+        $path = $input->getOption("app-path");
         if ($path === null) {
-            $output->writeln("<fg=red>error</> missing required option '--render-path'");
-            return "";
+            $output->writeln("<fg=red>error</> missing required option '--app-path'");
+            return null;
         }
 
-        $realpath = realpath($path);
-        if ($realpath === false) {
-            $output->writeln("<fg=red>error</> invalid render path '$path'; path does not exist");
-            return "";
+        try {
+            $codePathResolver = CodePathResolver::create($path);
+        } catch (Throwable $ex) {
+            $output->write("<fg=red>error</> invalid value for '--app-path'; ");
+            $output->writeln($ex->getMessage());
+            return null;
         }
 
-        $output->writeln(
-            "verified render path '$realpath'",
-            OutputInterface::VERBOSITY_DEBUG,
-        );
-
-        return $realpath;
+        return $codePathResolver;
     }
 
     private function locateRules(
@@ -262,10 +260,10 @@ class GenerateTypesCommand extends Command
 
     private function renderTypes(
         OutputInterface $output,
-        string $renderPath,
+        CodePathResolver $pathResolver,
     ): bool {
         $output->write("rendering types... ");
-        $this->definedTypes->renderClasses($renderPath, $output);
+        $this->definedTypes->renderClasses($pathResolver, $output);
         $output->writeln("<fg=green>done</>");
 
         return true;

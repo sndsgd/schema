@@ -3,6 +3,7 @@
 namespace sndsgd\schema;
 
 use Countable;
+use sndsgd\Classname;
 use sndsgd\schema\exceptions\DuplicateTypeException;
 use sndsgd\schema\exceptions\UndefinedTypeException;
 use sndsgd\schema\renderers\RenderHelper;
@@ -195,12 +196,27 @@ class DefinedTypes implements Countable
     }
 
     public function renderClasses(
-        string $basedir,
+        CodePathResolver $codePathResolver,
         ?OutputInterface $output = null,
     ): void {
         ksort($this->types);
 
+        $output->write("\n", false, OutputInterface::VERBOSITY_VERBOSE);
+
         foreach ($this->types as $type) {
+            $classname = Classname::toString($type->getName());
+            $path = $codePathResolver->getPath($classname);
+
+            // we only want to render files that will end up in the app
+            // base directory and _not_ in the app vendor directory.
+            if (!$codePathResolver->isPathRenderable($path)) {
+                $output && $output->writeln(
+                    sprintf("skipping render for '%s'... ", $type->getName()),
+                    OutputInterface::VERBOSITY_DEBUG,
+                );
+                continue;
+            }
+
             $output && $output->writeln(
                 sprintf("rendering '%s'... ", $type->getName()),
                 OutputInterface::VERBOSITY_DEBUG,
@@ -210,7 +226,7 @@ class DefinedTypes implements Countable
             if ($php === "") {
                 continue;
             }
-            $path = RenderHelper::getTypePsr4Path($basedir, $type);
+
             $dir = dirname($path);
             if (!file_exists($dir) && !mkdir($dir, 0777, true)) {
                 die("failed to create dir\n");
