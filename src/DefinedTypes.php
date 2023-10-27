@@ -201,7 +201,7 @@ class DefinedTypes implements Countable
     ): void {
         ksort($this->types);
 
-        $output->write("\n", false, OutputInterface::VERBOSITY_VERBOSE);
+        $output && $output->write("\n", false, OutputInterface::VERBOSITY_VERBOSE);
 
         foreach ($this->types as $type) {
             $classname = Classname::toString($type->getName());
