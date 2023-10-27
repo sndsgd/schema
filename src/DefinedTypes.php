@@ -3,6 +3,7 @@
 namespace sndsgd\schema;
 
 use Countable;
+use ReflectionClass;
 use sndsgd\Classname;
 use sndsgd\schema\exceptions\DuplicateTypeException;
 use sndsgd\schema\exceptions\UndefinedTypeException;
@@ -205,17 +206,21 @@ class DefinedTypes implements Countable
 
         foreach ($this->types as $type) {
             $classname = Classname::toString($type->getName());
-            $path = $codePathResolver->getPath($classname);
 
-            // we only want to render files that will end up in the app
-            // base directory and _not_ in the app vendor directory.
-            if (!$codePathResolver->isPathRenderable($path)) {
-                $output && $output->writeln(
-                    sprintf("skipping render for '%s'... ", $type->getName()),
-                    OutputInterface::VERBOSITY_DEBUG,
-                );
-                continue;
+            // if the class already exists, we only want to write it if
+            // it's path is in our app directory and _not_ in the app vendor
+            // directory.
+            if (class_exists($classname)) {
+                $rc = new ReflectionClass($classname);
+                if (!$codePathResolver->isPathRenderable($rc->getFileName())) {
+                    $output && $output->writeln(
+                        sprintf("skipping render for '%s'... ", $type->getName()),
+                        OutputInterface::VERBOSITY_DEBUG,
+                    );
+                    continue;
+                }
             }
+            $path = $codePathResolver->getPath($classname);
 
             $output && $output->writeln(
                 sprintf("rendering '%s'... ", $type->getName()),
