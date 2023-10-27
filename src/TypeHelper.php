@@ -109,8 +109,6 @@ class TypeHelper
             $value = ["type" => $value];
         }
 
-        $value["type"] = self::$aliases[$value["type"]] ?? $value["type"];
-
         return $value;
     }
 

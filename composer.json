@@ -5,7 +5,8 @@
     "homepage": "https://github.com/sndsgd/schema",
     "autoload": {
         "psr-4": {
-            "sndsgd\\schema\\": "src/"
+            "sndsgd\\schema\\": "src/",
+            "sndsgd\\types\\": "generated/sndsgd/types/"
         }
     },
     "bin": [
@@ -14,8 +15,7 @@
     "autoload-dev": {
         "psr-4": {
             "sndsgd\\schema\\": ["src/", "tests/unit/"],
-            "sndsgd\\types\\": ["build/sndsgd/types/"],
-            "sndsgd\\model\\": ["build/sndsgd/model/"]
+            "fixtures\\": ["build/fixtures/"]
         }
     },
     "require": {
