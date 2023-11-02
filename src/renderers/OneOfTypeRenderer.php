@@ -58,9 +58,6 @@ class OneOfTypeRenderer
             $tmp .= "        try {\n";
             $tmp .= "            \$this->value = new $typeClass(\n";
             $tmp .= "                \$value,\n";
-            if ($type instanceof ObjectType) {
-                $tmp .= "                false,\n";
-            }
             $tmp .= "                \$path,\n";
             $tmp .= "            );\n";
             $tmp .= "            return;\n";

@@ -70,7 +70,7 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new Position($value, false, $path);
+            $instance = new Position($value, $path);
         } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }

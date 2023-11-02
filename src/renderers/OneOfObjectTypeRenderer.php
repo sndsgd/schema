@@ -55,7 +55,6 @@ class OneOfObjectTypeRenderer
         $ret = "";
         $ret .= "    public function __construct(\n";
         $ret .= "        \$value,\n";
-        $ret .= "        bool \$ignoreRequired = false,\n";
         $ret .= "        string \$path = \"\$\"\n";
         $ret .= "    ) {\n";
 
@@ -83,7 +82,6 @@ class OneOfObjectTypeRenderer
             $ret .= "            case '$typeKeyValue':\n";
             $ret .= "                \$this->value = new $oneTypeClass(\n";
             $ret .= "                    \$value,\n";
-            $ret .= "                    \$ignoreRequired,\n";
             $ret .= "                    \$path,\n";
             $ret .= "                );\n";
             $ret .= "                break;\n";

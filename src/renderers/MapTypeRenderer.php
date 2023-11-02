@@ -107,12 +107,6 @@ class MapTypeRenderer
         $ret .= "            try {\n";
         $ret .= "                \$this->values[\$key] = {$beforeCreateType}new $valueTypeClass(\n";
         $ret .= "                    \$values->\$key,\n";
-        if (
-            $valueType instanceof ObjectType
-            || $valueType instanceof OneOfObjectType
-        ) {
-            $ret .= "                    false,\n";
-        }
         $ret .= "                    \"\$path.\$key\"\n";
         $ret .= "                ){$afterCreateType};\n";
         $ret .= "            } catch (\\sndsgd\\schema\\ValidationFailure \$ex) {\n";

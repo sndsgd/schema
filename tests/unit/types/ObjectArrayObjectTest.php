@@ -52,7 +52,7 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new Top($value, false, $path);
+            $instance = new Top($value, $path);
         } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }

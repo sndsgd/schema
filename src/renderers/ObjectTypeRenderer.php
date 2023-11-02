@@ -64,7 +64,6 @@ class ObjectTypeRenderer
         $ret = "";
         $ret .= "    public function __construct(\n";
         $ret .= "        \$values,\n";
-        $ret .= "        bool \$ignoreRequired = false,\n";
         $ret .= "        string \$path = \"\$\"\n";
         $ret .= "    ) {\n";
 
@@ -98,12 +97,6 @@ class ObjectTypeRenderer
             $tmp .= "            try {\n";
             $tmp .= "                \$this->$name = {$beforeCreateType}new $typeClass(\n";
             $tmp .= "                    \$values->$name,\n";
-            if (
-                $property->getType() instanceof ObjectType
-                || $property->getType() instanceof OneOfObjectType
-            ) {
-                $tmp .= "                    \$ignoreRequired,\n";
-            }
             $tmp .= "                    \"$path\"\n";
             $tmp .= "                ){$afterCreateType};\n";
             $tmp .= "            } catch (\\sndsgd\\schema\\ValidationFailure \$ex) {\n";
@@ -116,7 +109,7 @@ class ObjectTypeRenderer
                 $ret .= "\n";
                 $ret .= "        if (property_exists(\$values, '$name')) {\n";
                 $ret .= $tmp;
-                $ret .= "        } elseif (!\$ignoreRequired) {\n";
+                $ret .= "        } else {\n";
                 $ret .= "            \$errors->addError(\n";
                 $ret .= "                \"$path\",\n";
                 $ret .= "                _('required')\n";

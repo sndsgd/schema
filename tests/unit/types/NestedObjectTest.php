@@ -64,7 +64,7 @@ YAML;
         $ex = null;
 
         try {
-            $instance = new Test($value, false, $path);
+            $instance = new Test($value, $path);
         } catch (ValidationFailure $ex) {
             // do nothing; inspect the errors below
         }

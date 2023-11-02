@@ -22,7 +22,6 @@ final class ObjectType implements \JsonSerializable, \sndsgd\schema\GeneratedTyp
 
     public function __construct(
         $values,
-        bool $ignoreRequired = false,
         string $path = "$"
     ) {
         $values = (new \sndsgd\schema\rules\ObjectRule(
